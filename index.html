@@ -64,6 +64,9 @@
   .hero{padding:48px 0 6px}
   h1.head{font-size:clamp(30px,4.4vw,50px);line-height:1.07;font-weight:800;letter-spacing:-.035em;margin:0 0 24px;max-width:720px}
   h1.head .muted{color:var(--tx-3)}
+  .rainbow{background:linear-gradient(90deg,#ff6b6b,#fbbf24,#4ade80,#60a5fa,#a78bfa,#f472b6,#ff6b6b);background-size:200% auto;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent;animation:rainbow 4s linear infinite}
+  @keyframes rainbow{to{background-position:200% center}}
+  @media (prefers-reduced-motion:reduce){.rainbow{animation:none}}
   .controls{display:flex;font-size:clamp(15px,1.55vw,18px);font-weight:600;letter-spacing:-.01em;color:var(--tx-2)}
   .controls .row{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
   .chip{position:relative;display:inline-flex;align-items:center}
@@ -172,7 +175,7 @@
     </nav>
 
     <section class="hero">
-      <h1 class="head">should you <span class="muted">buy a rig</span> instead of paying for it?</h1>
+      <h1 class="head">should you <span class="muted">buy a</span> <span class="rainbow">rig</span> instead of paying for it?</h1>
       <div class="controls">
         <div class="row"><span>Today I pay</span><span class="chip"><select id="plan"></select><span class="car">▾</span></span><span id="andI">and I</span><span class="chip" id="thrChip"><select id="throttle"></select><span class="car">▾</span></span><span>and I can spend</span><span class="chip"><select id="budget"></select><span class="car">▾</span></span><span>for a rig</span></div>
       </div>
