@@ -57,16 +57,21 @@
   .brand .dollar{color:var(--accent);font-family:var(--mono);margin-right:7px;font-weight:700}
   .navlinks{display:flex;gap:22px;color:var(--tx-2);font-size:14px}
   .navlinks a:hover{color:var(--tx)}
-  .nav-right{margin-left:auto}
+  .nav-right{margin-left:auto;font-size:14px;color:var(--tx-2)}
+  .nav-right a:hover{filter:brightness(1.15)}
   .pill-mock{font-size:11px;color:var(--tx-3);border:1px solid var(--line);border-radius:999px;padding:4px 11px}
 
   /* hero */
   .hero{padding:48px 0 6px}
   h1.head{font-size:clamp(30px,4.4vw,50px);line-height:1.07;font-weight:800;letter-spacing:-.035em;margin:0 0 24px;max-width:720px}
   h1.head .muted{color:var(--tx-3)}
-  .rainbow{background:linear-gradient(90deg,#ff6b6b,#fbbf24,#4ade80,#60a5fa,#a78bfa,#f472b6,#ff6b6b);background-size:200% auto;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent;animation:rainbow 4s linear infinite}
+  .rainbow{display:inline-block;cursor:pointer;user-select:none;background:linear-gradient(90deg,#ff6b6b,#fbbf24,#4ade80,#60a5fa,#a78bfa,#f472b6,#ff6b6b);background-size:200% auto;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent;animation:rainbow 4s linear infinite;transition:transform .18s ease}
+  .rainbow:hover{transform:scale(1.1)}
+  .rainbow:active{transform:scale(1.04)}
   @keyframes rainbow{to{background-position:200% center}}
   @media (prefers-reduced-motion:reduce){.rainbow{animation:none}}
+  .confetti{position:fixed;z-index:9999;pointer-events:none;will-change:transform,opacity;animation:confetti 1s ease-out forwards}
+  @keyframes confetti{0%{opacity:1;transform:translate(-50%,-50%) scale(1)}100%{opacity:0;transform:translate(calc(-50% + var(--dx)),calc(-50% + var(--dy))) rotate(var(--r)) scale(.9)}}
   .controls{display:flex;font-size:clamp(15px,1.55vw,18px);font-weight:600;letter-spacing:-.01em;color:var(--tx-2)}
   .controls .row{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
   .chip{position:relative;display:inline-flex;align-items:center}
@@ -172,6 +177,7 @@
   <div class="wrap">
     <nav>
       <div class="brand"><span class="dollar">$</span>shouldirunthis</div>
+      <div class="nav-right">built by <a href="https://x.com/port_dev" target="_blank" rel="noopener noreferrer" style="color:var(--accent)">port</a></div>
     </nav>
 
     <section class="hero">
@@ -237,7 +243,7 @@
           <span class="key"><b style="color:var(--tx)">◆</b>&nbsp;autocomplete-only</span>
         </div>
       </div>
-      <p class="note" style="margin-top:24px">built by <a href="https://x.com/port_dev" target="_blank" rel="noopener noreferrer" style="color:var(--accent)">port</a></p>
+      <p class="note" style="margin-top:24px">Got feedback? <a href="https://x.com/port_dev" target="_blank" rel="noopener noreferrer" style="color:var(--accent)">DM me on X</a>.</p>
     </footer>
   </div>
   <div id="pop" class="pop"></div>
@@ -499,6 +505,27 @@ buildSelects(); buildAssumptions(); buildTable(); recompute();
     showAt(h, `<div class="ptitle">${d.title}</div><div class="pbody">${d.body}</div>`); });
   thead.addEventListener('mouseout', e=>{ if(e.target.closest('th[data-h]')) hide(); });
   window.addEventListener('scroll', hide, true);
+})();
+
+(function(){
+  const EMOJI=['🤖','💸','🔥','⚡','🖥️','🧠','💰','🚀','✨','🎉','💀','📉','🤔','🦾','🪙','🍌','📈','🧮'];
+  const rig=document.querySelector('.rainbow'); if(!rig) return;
+  rig.addEventListener('click', ()=>{
+    const r=rig.getBoundingClientRect(), x=r.left+r.width/2, y=r.top+r.height/2;
+    for(let i=0;i<24;i++){
+      const s=document.createElement('span'); s.className='confetti';
+      s.textContent=EMOJI[Math.floor(Math.random()*EMOJI.length)];
+      const ang=Math.random()*Math.PI*2, dist=70+Math.random()*170;
+      s.style.left=x+'px'; s.style.top=y+'px';
+      s.style.setProperty('--dx', Math.round(Math.cos(ang)*dist)+'px');
+      s.style.setProperty('--dy', Math.round(Math.sin(ang)*dist*0.6 + 140 + Math.random()*160)+'px');
+      s.style.setProperty('--r', Math.round(Math.random()*720-360)+'deg');
+      s.style.fontSize=(15+Math.random()*16).toFixed(0)+'px';
+      s.style.animationDelay=Math.round(Math.random()*70)+'ms';
+      document.body.appendChild(s);
+      s.addEventListener('animationend', ()=>s.remove());
+    }
+  });
 })();
 </script>
 </body>
