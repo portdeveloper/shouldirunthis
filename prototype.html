@@ -10,14 +10,15 @@
 <meta property="og:site_name" content="shouldirunthis" />
 <meta property="og:title" content="shouldirunthis" />
 <meta property="og:description" content="Should you buy a local AI rig, or just keep the sub? Compare calibrated local costs against ChatGPT, Claude, and API usage." />
-<meta property="og:image" content="/og.png" />
+<meta property="og:url" content="https://shouldirunthis.com/" />
+<meta property="og:image" content="https://shouldirunthis.com/og.png" />
 <meta property="og:image:alt" content="shouldirunthis preview card: buy a rig, or keep your sub?" />
 <meta property="og:image:width" content="1200" />
 <meta property="og:image:height" content="630" />
 <meta name="twitter:card" content="summary_large_image" />
 <meta name="twitter:title" content="shouldirunthis" />
 <meta name="twitter:description" content="A calibrated calculator for deciding whether local AI hardware beats paying for subscriptions or API usage." />
-<meta name="twitter:image" content="/og.png" />
+<meta name="twitter:image" content="https://shouldirunthis.com/og.png" />
 <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
 <link rel="alternate icon" href="/favicon.ico" />
 <link rel="icon" href="/favicon-512.png" sizes="512x512" type="image/png" />
@@ -171,9 +172,16 @@
 
   @media (max-width:760px){
     .hero{padding:34px 0 6px} .navlinks{display:none} .assump-grid{grid-template-columns:1fr 1fr}
-    .advcol{display:none}
+    .advcol,.mobile-hide,.subcol{display:none}
     table{min-width:0}
-    thead th,tbody td{padding:11px 9px;font-size:12.5px}
+    thead th,tbody td{padding:11px 8px;font-size:12.5px}
+    thead th.l,td.model{width:48%}
+    thead th[data-h="cost"],td[id^="loc-"]{width:22%}
+    thead th[data-h="verdict"],td[id^="vd-"]{width:30%}
+    tbody td{white-space:normal}
+    .vpill{font-size:11.5px;padding:5px 8px;white-space:normal;justify-content:center;text-align:center;line-height:1.2}
+    td.model .nm{font-size:13.5px}
+    td.model .meta{font-size:10.5px;white-space:normal}
     .edit input{width:46px}
     .table-wrap{ -webkit-overflow-scrolling:touch }
   }
@@ -201,12 +209,12 @@
         <thead>
           <tr>
             <th class="l" data-h="model">Model<span class="sub">can it code? · rig</span></th>
-            <th data-h="speed">Speed<span class="sub">tokens/sec</span></th>
-            <th data-h="rig">Rig<span class="sub">approx</span></th>
+            <th class="mobile-hide" data-h="speed">Speed<span class="sub">tokens/sec</span></th>
+            <th class="mobile-hide" data-h="rig">Rig<span class="sub">approx</span></th>
             <th class="advcol" data-h="power">Power<span class="sub">watts</span></th>
             <th class="advcol" data-h="apiPrice">API price<span class="sub">$/MTok</span></th>
             <th data-h="cost">Cost to run<span class="sub">/mo · rig÷3yr + power</span></th>
-            <th data-h="api">vs API<span class="sub">its own API</span></th>
+            <th class="mobile-hide" data-h="api">vs API<span class="sub">its own API</span></th>
             <th class="subcol" data-h="g20">vs GPT<span class="sub">$20 sub</span></th>
             <th class="subcol" data-h="c20">vs Claude<span class="sub">$20 sub</span></th>
             <th class="subcol" data-h="g100">vs GPT<span class="sub">$100 sub</span></th>
@@ -430,12 +438,12 @@ function buildTable(){
       <td class="model">
         <div class="nm">${m.name}</div>
         <div class="meta"><span class="tier" title="LiveBench coding ${m.coding} · ${m.params}">${TIER[m.tier].g}</span>${TIER[m.tier].label} · ${m.rig}</div></td>
-      <td><span class="edit"><input id="spd-${i}" type="number" min="1" value="${m.tps}"><span class="u">t/s</span></span></td>
-      <td><span class="edit"><span class="u">$</span><input id="rig-${i}" type="number" min="0" step="100" value="${m.capex}" style="width:72px"></span></td>
+      <td class="mobile-hide"><span class="edit"><input id="spd-${i}" type="number" min="1" value="${m.tps}"><span class="u">t/s</span></span></td>
+      <td class="mobile-hide"><span class="edit"><span class="u">$</span><input id="rig-${i}" type="number" min="0" step="100" value="${m.capex}" style="width:72px"></span></td>
       <td class="advcol"><span class="edit"><input id="watt-${i}" type="number" min="0" step="10" value="${m.watts}" style="width:62px"><span class="u">W</span></span></td>
       <td class="advcol"><span class="edit"><span class="u">$</span><input id="mapi-${i}" type="number" min="0.01" step="0.01" value="${m.api}" style="width:58px"></span></td>
       <td id="loc-${i}"></td>
-      <td id="api-${i}"></td>
+      <td class="mobile-hide" id="api-${i}"></td>
       <td class="subcol" id="g20-${i}"></td><td class="subcol" id="c20-${i}"></td><td class="subcol" id="g100-${i}"></td><td class="subcol" id="c100-${i}"></td>
       <td id="vd-${i}"></td>`;
     tb.appendChild(tr);
@@ -519,8 +527,10 @@ buildSelects(); buildAssumptions(); buildTable(); recompute();
 
 (function(){
   const EMOJI=['🤖','💸','🔥','⚡','🖥️','🧠','💰','🚀','✨','🎉','💀','📉','🤔','🦾','🪙','🍌','📈','🧮'];
+  const reduceMotion=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const rig=document.querySelector('.rainbow'); if(!rig) return;
   rig.addEventListener('click', ()=>{
+    if(reduceMotion) return;
     const r=rig.getBoundingClientRect(), x=r.left+r.width/2, y=r.top+r.height/2;
     for(let i=0;i<24;i++){
       const s=document.createElement('span'); s.className='confetti';
