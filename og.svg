@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" role="img" aria-label="shouldirunthis preview">
+  <defs>
+    <linearGradient id="top" x1="0" y1="0" x2="1200" y2="0" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#a78bfa"/>
+      <stop offset=".68" stop-color="#f472b6"/>
+      <stop offset="1" stop-color="#fb923c"/>
+    </linearGradient>
+    <linearGradient id="panel" x1="120" y1="116" x2="1060" y2="564" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#18181b"/>
+      <stop offset="1" stop-color="#101012"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="630" fill="#0a0a0a"/>
+  <rect width="1200" height="8" fill="url(#top)"/>
+  <rect x="82" y="82" width="1036" height="466" rx="22" fill="url(#panel)" stroke="rgba(255,255,255,.12)" stroke-width="2"/>
+  <text x="122" y="145" font-family="-apple-system, BlinkMacSystemFont, Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="34" font-weight="800" fill="#f3f3f4">
+    <tspan fill="#a78bfa" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace">$</tspan>shouldirunthis
+  </text>
+  <text x="122" y="240" font-family="-apple-system, BlinkMacSystemFont, Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="62" font-weight="800" fill="#f3f3f4">
+    <tspan x="122" dy="0">Buy a rig, or</tspan>
+    <tspan x="122" dy="74" fill="#8b8b94">keep your sub?</tspan>
+  </text>
+  <text x="122" y="386" font-family="-apple-system, BlinkMacSystemFont, Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="25" fill="#a1a1aa">
+    <tspan x="122" dy="0">Calibrated local AI hardware costs vs ChatGPT, Claude,</tspan>
+    <tspan x="122" dy="36">and API usage.</tspan>
+  </text>
+  <g transform="translate(122 464)">
+    <rect width="156" height="44" rx="22" fill="rgba(248,113,113,.14)"/>
+    <text x="78" y="29" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="18" font-weight="700" fill="#f87171">just subscribe</text>
+    <rect x="174" width="114" height="44" rx="22" fill="rgba(96,165,250,.14)"/>
+    <text x="231" y="29" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="18" font-weight="700" fill="#60a5fa">toss-up</text>
+    <rect x="306" width="128" height="44" rx="22" fill="rgba(74,222,128,.14)"/>
+    <text x="370" y="29" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="18" font-weight="700" fill="#4ade80">buy the rig</text>
+  </g>
+  <g transform="translate(748 150)">
+    <rect width="300" height="282" rx="18" fill="#0f0f11" stroke="rgba(255,255,255,.1)" stroke-width="2"/>
+    <text x="28" y="50" font-family="-apple-system, BlinkMacSystemFont, Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="18" font-weight="700" fill="#a1a1aa">Example verdict</text>
+    <text x="28" y="104" font-family="-apple-system, BlinkMacSystemFont, Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="42" font-weight="800" fill="#f87171">6.3x</text>
+    <text x="132" y="104" font-family="-apple-system, BlinkMacSystemFont, Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="23" font-weight="700" fill="#f3f3f4">the sub</text>
+    <line x1="28" y1="132" x2="272" y2="132" stroke="rgba(255,255,255,.1)" stroke-width="2"/>
+    <text x="28" y="174" font-family="-apple-system, BlinkMacSystemFont, Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="21" fill="#f3f3f4">GLM 5.2 local</text>
+    <text x="272" y="174" text-anchor="end" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="21" fill="#a1a1aa">~$264/mo</text>
+    <text x="28" y="218" font-family="-apple-system, BlinkMacSystemFont, Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="21" fill="#f3f3f4">Claude Max</text>
+    <text x="272" y="218" text-anchor="end" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="21" fill="#a1a1aa">$100/mo</text>
+    <text x="28" y="260" font-family="-apple-system, BlinkMacSystemFont, Segoe UI, Inter, Helvetica, Arial, sans-serif" font-size="17" fill="#67676f">calibrated Jun 2026</text>
+  </g>
+</svg>
