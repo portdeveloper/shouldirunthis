@@ -4,7 +4,7 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>shouldirunthis: buy a rig, or keep your sub?</title>
-<meta name="description" content="A calibrated calculator for vibecoders comparing local AI rig costs against ChatGPT, Claude, and API usage." />
+<meta name="description" content="A calibrated calculator for deciding whether running a local AI rig beats paying for an API or a ChatGPT/Claude subscription." />
 <meta name="theme-color" content="#0a0a0a" />
 <meta property="og:type" content="website" />
 <meta property="og:site_name" content="shouldirunthis" />
@@ -16,7 +16,7 @@
 <meta property="og:image:height" content="630" />
 <meta name="twitter:card" content="summary_large_image" />
 <meta name="twitter:title" content="shouldirunthis" />
-<meta name="twitter:description" content="A calibrated calculator for vibecoders deciding whether local AI hardware beats subscriptions or API usage." />
+<meta name="twitter:description" content="A calibrated calculator for deciding whether local AI hardware beats paying for subscriptions or API usage." />
 <meta name="twitter:image" content="/og.png" />
 <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
 <link rel="alternate icon" href="/favicon.ico" />
@@ -169,7 +169,14 @@
   .key{display:inline-flex;align-items:center;gap:6px}
   .swatch{width:9px;height:9px;border-radius:3px;display:inline-block}
 
-  @media (max-width:760px){ .hero{padding:34px 0 6px} .navlinks{display:none} .assump-grid{grid-template-columns:1fr 1fr} }
+  @media (max-width:760px){
+    .hero{padding:34px 0 6px} .navlinks{display:none} .assump-grid{grid-template-columns:1fr 1fr}
+    .advcol{display:none}
+    table{min-width:0}
+    thead th,tbody td{padding:11px 9px;font-size:12.5px}
+    .edit input{width:46px}
+    .table-wrap{ -webkit-overflow-scrolling:touch }
+  }
 </style>
 </head>
 <body>
@@ -193,11 +200,11 @@
       <table id="tbl">
         <thead>
           <tr>
-            <th class="l" data-h="model">Model<span class="sub">can it vibecode? · rig</span></th>
+            <th class="l" data-h="model">Model<span class="sub">can it code? · rig</span></th>
             <th data-h="speed">Speed<span class="sub">tokens/sec</span></th>
             <th data-h="rig">Rig<span class="sub">approx</span></th>
-            <th data-h="power">Power<span class="sub">watts</span></th>
-            <th data-h="apiPrice">API price<span class="sub">$/MTok</span></th>
+            <th class="advcol" data-h="power">Power<span class="sub">watts</span></th>
+            <th class="advcol" data-h="apiPrice">API price<span class="sub">$/MTok</span></th>
             <th data-h="cost">Cost to run<span class="sub">/mo · rig÷3yr + power</span></th>
             <th data-h="api">vs API<span class="sub">its own API</span></th>
             <th class="subcol" data-h="g20">vs GPT<span class="sub">$20 sub</span></th>
@@ -425,8 +432,8 @@ function buildTable(){
         <div class="meta"><span class="tier" title="LiveBench coding ${m.coding} · ${m.params}">${TIER[m.tier].g}</span>${TIER[m.tier].label} · ${m.rig}</div></td>
       <td><span class="edit"><input id="spd-${i}" type="number" min="1" value="${m.tps}"><span class="u">t/s</span></span></td>
       <td><span class="edit"><span class="u">$</span><input id="rig-${i}" type="number" min="0" step="100" value="${m.capex}" style="width:72px"></span></td>
-      <td><span class="edit"><input id="watt-${i}" type="number" min="0" step="10" value="${m.watts}" style="width:62px"><span class="u">W</span></span></td>
-      <td><span class="edit"><span class="u">$</span><input id="mapi-${i}" type="number" min="0.01" step="0.01" value="${m.api}" style="width:58px"></span></td>
+      <td class="advcol"><span class="edit"><input id="watt-${i}" type="number" min="0" step="10" value="${m.watts}" style="width:62px"><span class="u">W</span></span></td>
+      <td class="advcol"><span class="edit"><span class="u">$</span><input id="mapi-${i}" type="number" min="0.01" step="0.01" value="${m.api}" style="width:58px"></span></td>
       <td id="loc-${i}"></td>
       <td id="api-${i}"></td>
       <td class="subcol" id="g20-${i}"></td><td class="subcol" id="c20-${i}"></td><td class="subcol" id="g100-${i}"></td><td class="subcol" id="c100-${i}"></td>
@@ -483,6 +490,8 @@ buildSelects(); buildAssumptions(); buildTable(); recompute();
 
 (function(){
   const pop=document.getElementById('pop');
+  const pillHtml=r=>`<div class="ptitle" style="color:var(${r.C})">${r.title}</div><div class="pbody">${r.body}</div>${r.math?`<div class="pmath">${r.math}</div>`:''}`;
+  const headerHtml=d=>`<div class="ptitle">${d.title}</div><div class="pbody">${d.body}</div>`;
   function showAt(el, html){
     pop.innerHTML=html;
     const pw=Math.min(320, window.innerWidth-24); pop.style.width=pw+'px';
@@ -496,14 +505,15 @@ buildSelects(); buildAssumptions(); buildTable(); recompute();
     pop.style.top=top+'px';
   }
   const hide=()=>pop.classList.remove('show');
-  const tb=document.getElementById('tbody');
-  tb.addEventListener('mouseover', e=>{ const p=e.target.closest('.vpill'); if(!p) return; const r=RAT[+p.dataset.i]; if(!r) return;
-    showAt(p, `<div class="ptitle" style="color:var(${r.C})">${r.title}</div><div class="pbody">${r.body}</div>${r.math?`<div class="pmath">${r.math}</div>`:''}`); });
+  const htmlFor=el=>el.matches('.vpill')?(RAT[+el.dataset.i]&&pillHtml(RAT[+el.dataset.i])):(HEADERS[el.dataset.h]&&headerHtml(HEADERS[el.dataset.h]));
+  const tb=document.getElementById('tbody'), thead=document.getElementById('tbl').tHead;
+  // desktop: hover
+  tb.addEventListener('mouseover', e=>{ const p=e.target.closest('.vpill'); if(p){const h=htmlFor(p); if(h) showAt(p,h);} });
   tb.addEventListener('mouseout', e=>{ if(e.target.closest('.vpill')) hide(); });
-  const thead=document.getElementById('tbl').tHead;
-  thead.addEventListener('mouseover', e=>{ const h=e.target.closest('th[data-h]'); if(!h) return; const d=HEADERS[h.dataset.h]; if(!d) return;
-    showAt(h, `<div class="ptitle">${d.title}</div><div class="pbody">${d.body}</div>`); });
+  thead.addEventListener('mouseover', e=>{ const t=e.target.closest('th[data-h]'); if(t){const h=htmlFor(t); if(h) showAt(t,h);} });
   thead.addEventListener('mouseout', e=>{ if(e.target.closest('th[data-h]')) hide(); });
+  // mobile + desktop: tap/click to open, tap elsewhere to dismiss
+  document.addEventListener('click', e=>{ const el=e.target.closest('.vpill, th[data-h]'); if(!el){ hide(); return; } const h=htmlFor(el); if(h) showAt(el,h); });
   window.addEventListener('scroll', hide, true);
 })();
 
