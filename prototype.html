@@ -11,6 +11,7 @@
 <meta property="og:title" content="shouldirunthis" />
 <meta property="og:description" content="Should you buy a local AI rig, or just keep the sub? Compare calibrated local costs against ChatGPT, Claude, and API usage." />
 <meta property="og:url" content="https://shouldirunthis.xyz/" />
+<meta property="og:locale" content="en_US" />
 <meta property="og:image" content="https://shouldirunthis.xyz/og.png" />
 <meta property="og:image:alt" content="shouldirunthis preview card: buy a rig, or keep your sub?" />
 <meta property="og:image:width" content="1200" />
@@ -69,6 +70,12 @@
   .nav-right{margin-left:auto;font-size:14px;color:var(--tx-2)}
   .nav-right a:hover{filter:brightness(1.15)}
   .pill-mock{font-size:11px;color:var(--tx-3);border:1px solid var(--line);border-radius:999px;padding:4px 11px}
+  .langsel{position:relative;display:inline-flex;align-items:center}
+  .langsel select{appearance:none;-webkit-appearance:none;font-family:var(--sans);font-size:13px;font-weight:600;color:var(--tx-2);
+    background:var(--bg-elev);border:1px solid var(--line-2);border-radius:8px;padding:5px 26px 5px 10px;cursor:pointer}
+  .langsel select:hover{color:var(--tx);border-color:var(--tx-3)}
+  .langsel select:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-dim)}
+  .langsel::after{content:"▾";position:absolute;right:9px;pointer-events:none;color:var(--tx-3);font-size:10px}
 
   /* hero */
   .hero{padding:48px 0 6px}
@@ -186,7 +193,7 @@
   .swatch{width:9px;height:9px;border-radius:3px;display:inline-block}
 
   @media (max-width:760px){
-    .hero{padding:34px 0 6px} .navlinks{display:none} .assump-grid{grid-template-columns:1fr 1fr}
+    .hero{padding:34px 0 6px} .navlinks{display:none} .assump-grid{grid-template-columns:1fr 1fr} nav{gap:14px}
     .advcol,.mobile-hide,.subcol{display:none}
     table{min-width:0}
     thead th,tbody td{padding:11px 8px;font-size:12.5px}
@@ -207,37 +214,38 @@
   <div class="wrap">
     <nav>
       <div class="brand"><span class="dollar">$</span>shouldirunthis</div>
-      <div class="nav-right">built by <a href="https://x.com/port_dev" target="_blank" rel="noopener noreferrer" style="color:var(--accent)">port</a></div>
+      <div class="nav-right"><span data-i18n="builtBy">built by</span> <a href="https://x.com/port_dev" target="_blank" rel="noopener noreferrer" style="color:var(--accent)">port</a></div>
+      <label class="langsel"><select id="lang" aria-label="Language / Dil"></select></label>
     </nav>
 
     <section class="hero">
-      <h1 class="head">should you <span class="muted">buy a</span> <span class="rainbow">rig</span> instead of paying for an API or subscription?</h1>
+      <h1 class="head" data-i18n-html="heroTitle">should you <span class="muted">buy a</span> <span class="rainbow">rig</span> instead of paying for an API or subscription?</h1>
       <div class="controls">
-        <div class="row"><span>Today I pay</span><span class="chip"><select id="plan"></select><span class="car">▾</span></span><span id="andI">and I</span><span class="chip" id="thrChip"><select id="throttle"></select><span class="car">▾</span></span><span>and I can spend</span><span class="chip"><select id="budget"></select><span class="car">▾</span></span><span>for a rig</span></div>
+        <div class="row"><span data-i18n="ctlPay">Today I pay</span><span class="chip"><select id="plan"></select><span class="car">▾</span></span><span id="andI" data-i18n="ctlAndI">and I</span><span class="chip" id="thrChip"><select id="throttle"></select><span class="car">▾</span></span><span data-i18n="ctlSpend">and I can spend</span><span class="chip"><select id="budget"></select><span class="car">▾</span></span><span data-i18n="ctlForRig">for a rig</span></div>
       </div>
       <div class="usage-line" id="usageLine"></div>
     </section>
 
     <div class="tabletools">
-      <label class="device-pick"><span>Can my device run these?</span><span class="chip"><select id="device" aria-label="Your device"></select><span class="car">▾</span></span></label>
-      <label class="tgl" id="noSubsLabel"><span>I use the API, not subscriptions</span><input type="checkbox" id="noSubs"><span class="switch" aria-hidden="true"></span></label>
+      <label class="device-pick"><span data-i18n="devicePick">Can my device run these?</span><span class="chip"><select id="device" aria-label="Your device"></select><span class="car">▾</span></span></label>
+      <label class="tgl" id="noSubsLabel"><span data-i18n="apiToggle">I use the API, not subscriptions</span><input type="checkbox" id="noSubs"><span class="switch" aria-hidden="true"></span></label>
     </div>
     <div class="table-wrap">
       <table id="tbl">
         <thead>
           <tr>
-            <th class="l" data-h="model">Model<span class="sub">can it code? · rig</span></th>
-            <th class="mobile-hide" data-h="speed">Speed<span class="sub">tokens/sec</span></th>
-            <th class="mobile-hide" data-h="rig">Rig<span class="sub">approx</span></th>
-            <th class="advcol" data-h="power">Power<span class="sub">watts</span></th>
-            <th class="advcol" data-h="apiPrice">API price<span class="sub">$/MTok</span></th>
-            <th data-h="cost">Cost to run<span class="sub">/mo · rig÷3yr + power</span></th>
-            <th class="mobile-hide" data-h="api">vs API<span class="sub">its own API</span></th>
-            <th class="subcol" data-h="g20">vs GPT<span class="sub">$20 sub</span></th>
-            <th class="subcol" data-h="c20">vs Claude<span class="sub">$20 sub</span></th>
-            <th class="subcol" data-h="g100">vs GPT<span class="sub">$100 sub</span></th>
-            <th class="subcol" data-h="c100">vs Claude<span class="sub">$100 sub</span></th>
-            <th data-h="verdict">Verdict<span class="sub">&nbsp;</span></th>
+            <th class="l" data-h="model"><span data-i18n="th.model">Model</span><span class="sub" data-i18n="thsub.model">can it code? · rig</span></th>
+            <th class="mobile-hide" data-h="speed"><span data-i18n="th.speed">Speed</span><span class="sub" data-i18n="thsub.speed">tokens/sec</span></th>
+            <th class="mobile-hide" data-h="rig"><span data-i18n="th.rig">Rig</span><span class="sub" data-i18n="thsub.rig">approx</span></th>
+            <th class="advcol" data-h="power"><span data-i18n="th.power">Power</span><span class="sub" data-i18n="thsub.power">watts</span></th>
+            <th class="advcol" data-h="apiPrice"><span data-i18n="th.apiPrice">API price</span><span class="sub" data-i18n="thsub.apiPrice">$/MTok</span></th>
+            <th data-h="cost"><span data-i18n="th.cost">Cost to run</span><span class="sub" data-i18n="thsub.cost">/mo · rig÷3yr + power</span></th>
+            <th class="mobile-hide" data-h="api"><span data-i18n="th.api">vs API</span><span class="sub" data-i18n="thsub.api">its own API</span></th>
+            <th class="subcol" data-h="g20"><span data-i18n="th.g20">vs GPT</span><span class="sub" data-i18n="thsub.g20">$20 sub</span></th>
+            <th class="subcol" data-h="c20"><span data-i18n="th.c20">vs Claude</span><span class="sub" data-i18n="thsub.c20">$20 sub</span></th>
+            <th class="subcol" data-h="g100"><span data-i18n="th.g100">vs GPT</span><span class="sub" data-i18n="thsub.g100">$100 sub</span></th>
+            <th class="subcol" data-h="c100"><span data-i18n="th.c100">vs Claude</span><span class="sub" data-i18n="thsub.c100">$100 sub</span></th>
+            <th data-h="verdict"><span data-i18n="th.verdict">Verdict</span><span class="sub">&nbsp;</span></th>
           </tr>
         </thead>
         <tbody id="tbody"></tbody>
@@ -246,37 +254,36 @@
     <p class="note tablenote" id="tnote"></p>
 
     <section class="assumptions">
-      <div class="assump-head"><b>assumptions</b><span>mid-2026 estimates; edit your reality</span></div>
+      <div class="assump-head"><b data-i18n="asmHead">assumptions</b><span data-i18n="asmSub">mid-2026 estimates; edit your reality</span></div>
       <div class="assump-grid">
-        <label>coding API $/MTok <span class="edit"><span class="u">$</span><input id="frontier" type="number" min="0.1" step="0.1"></span></label>
-        <label>input:output <span class="edit"><input id="ioratio" type="number" min="1" step="1"><span class="u">:1</span></span></label>
-        <label>electricity <span class="edit"><span class="u">$</span><input id="elec" type="number" min="0" step="0.01"><span class="u">/kWh</span></span></label>
-        <label>amortization <span class="edit"><input id="amort" type="number" min="1" step="1"><span class="u">mo</span></span></label>
+        <label><span data-i18n="asm.frontier">coding API $/MTok</span> <span class="edit"><span class="u">$</span><input id="frontier" type="number" min="0.1" step="0.1"></span></label>
+        <label><span data-i18n="asm.ioratio">input:output</span> <span class="edit"><input id="ioratio" type="number" min="1" step="1"><span class="u">:1</span></span></label>
+        <label><span data-i18n="asm.elec">electricity</span> <span class="edit"><span class="u">$</span><input id="elec" type="number" min="0" step="0.01"><span class="u">/kWh</span></span></label>
+        <label><span data-i18n="asm.amort">amortization</span> <span class="edit"><input id="amort" type="number" min="1" step="1"><span class="u" data-i18n="asmUnitMo">mo</span></span></label>
       </div>
-      <p class="note assump-note">High-memory M3 Ultra rows are used-market estimates: Apple currently sells M3 Ultra Mac Studio at 96GB, while 256GB/512GB configurations are not normal new-buy options. The $5/MTok default is a coding-model blend, not a flagship-only Opus/GPT-5.5 anchor.</p>
+      <p class="note assump-note" data-i18n="asmNote">High-memory M3 Ultra rows are used-market estimates: Apple currently sells M3 Ultra Mac Studio at 96GB, while 256GB/512GB configurations are not normal new-buy options. The $5/MTok default is a coding-model blend, not a flagship-only Opus/GPT-5.5 anchor.</p>
     </section>
 
     <footer>
       <div class="quote">
-        “GLM 5.2 is great, but my $200/mo Codex sub gets me more usage than $200 of GLM API.
-        A great supplemental model, not a replacement.”
-        <div class="who"><a href="https://x.com/mweinbach/status/2068320723530129522?s=20" target="_blank" rel="noopener noreferrer">@mweinbach source tweet</a></div>
+        <span data-i18n="quoteText">“GLM 5.2 is great, but my $200/mo Codex sub gets me more usage than $200 of GLM API. A great supplemental model, not a replacement.”</span>
+        <div class="who"><a href="https://x.com/mweinbach/status/2068320723530129522?s=20" target="_blank" rel="noopener noreferrer" data-i18n="quoteSource">@mweinbach source tweet</a></div>
       </div>
       <div class="legends">
-        <div class="grp"><span>verdict</span>
-          <span class="key"><span class="swatch" style="background:var(--green)"></span>buy the rig</span>
-          <span class="key"><span class="swatch" style="background:var(--blue)"></span>toss-up</span>
-          <span class="key"><span class="swatch" style="background:var(--amber)"></span>only if you must</span>
-          <span class="key"><span class="swatch" style="background:var(--orange)"></span>overpriced</span>
-          <span class="key"><span class="swatch" style="background:var(--red)"></span>just subscribe</span>
+        <div class="grp"><span data-i18n="legVerdict">verdict</span>
+          <span class="key"><span class="swatch" style="background:var(--green)"></span><span data-i18n="vlabel.green">buy the rig</span></span>
+          <span class="key"><span class="swatch" style="background:var(--blue)"></span><span data-i18n="vlabel.blue">toss-up</span></span>
+          <span class="key"><span class="swatch" style="background:var(--amber)"></span><span data-i18n="vlabel.amber">only if you must</span></span>
+          <span class="key"><span class="swatch" style="background:var(--orange)"></span><span data-i18n="vlabel.orange">overpriced</span></span>
+          <span class="key"><span class="swatch" style="background:var(--red)"></span><span data-i18n="vlabel.red">just subscribe</span></span>
         </div>
-        <div class="grp"><span>coding</span>
-          <span class="key"><b style="color:var(--tx)">◆◆◆</b>&nbsp;agentic-ready</span>
-          <span class="key"><b style="color:var(--tx)">◆◆</b>&nbsp;light agentic</span>
-          <span class="key"><b style="color:var(--tx)">◆</b>&nbsp;autocomplete-only</span>
+        <div class="grp"><span data-i18n="legCoding">coding</span>
+          <span class="key"><b style="color:var(--tx)">◆◆◆</b>&nbsp;<span data-i18n="tierLabels.3">agentic-ready</span></span>
+          <span class="key"><b style="color:var(--tx)">◆◆</b>&nbsp;<span data-i18n="tierLabels.2">light agentic</span></span>
+          <span class="key"><b style="color:var(--tx)">◆</b>&nbsp;<span data-i18n="tierLabels.1">autocomplete-only</span></span>
         </div>
       </div>
-      <p class="note" style="margin-top:24px">Got feedback? <a href="https://x.com/port_dev" target="_blank" rel="noopener noreferrer" style="color:var(--accent)">DM me on X</a>.</p>
+      <p class="note" style="margin-top:24px"><span data-i18n="feedbackQ">Got feedback?</span> <a href="https://x.com/port_dev" target="_blank" rel="noopener noreferrer" style="color:var(--accent)" data-i18n="feedbackDm">DM me on X</a>.</p>
     </footer>
   </div>
   <div id="pop" class="pop"></div>
@@ -284,6 +291,182 @@
 <script>
 /* ---------- calibrated data (Jun 2026; editable estimates) ---------- */
 let CONST = { FRONTIER:5, ELEC:0.18, AMORT:36, IORATIO:12 };
+
+/* ---------- i18n: all user-facing copy lives here, keyed by language ---------- */
+const I18N = {
+  en: {
+    title:'shouldirunthis: buy a rig, or keep your sub?',
+    metaDesc:'A calibrated calculator for deciding whether running a local AI rig beats paying for an API or a ChatGPT/Claude subscription.',
+    builtBy:'built by',
+    heroTitle:'should you <span class="muted">buy a</span> <span class="rainbow">rig</span> instead of paying for an API or subscription?',
+    ctlPay:'Today I pay', ctlAndI:'and I', ctlSpend:'and I can spend', ctlForRig:'for a rig',
+    devicePick:'Can my device run these?',
+    apiToggle:'I use the API, not subscriptions',
+    th:{model:'Model',speed:'Speed',rig:'Rig',power:'Power',apiPrice:'API price',cost:'Cost to run',api:'vs API',g20:'vs GPT',c20:'vs Claude',g100:'vs GPT',c100:'vs Claude',verdict:'Verdict'},
+    thsub:{model:'can it code? · rig',speed:'tokens/sec',rig:'approx',power:'watts',apiPrice:'$/MTok',cost:'/mo · rig÷3yr + power',api:'its own API',g20:'$20 sub',c20:'$20 sub',g100:'$100 sub',c100:'$100 sub'},
+    asmHead:'assumptions', asmSub:'mid-2026 estimates; edit your reality',
+    asm:{frontier:'coding API $/MTok',ioratio:'input:output',elec:'electricity',amort:'amortization'},
+    asmUnitMo:'mo',
+    asmNote:'High-memory M3 Ultra rows are used-market estimates: Apple currently sells M3 Ultra Mac Studio at 96GB, while 256GB/512GB configurations are not normal new-buy options. The $5/MTok default is a coding-model blend, not a flagship-only Opus/GPT-5.5 anchor.',
+    quoteText:'“GLM 5.2 is great, but my $200/mo Codex sub gets me more usage than $200 of GLM API. A great supplemental model, not a replacement.”',
+    quoteSource:'@mweinbach source tweet',
+    legVerdict:'verdict', legCoding:'coding',
+    feedbackQ:'Got feedback?', feedbackDm:'DM me on X',
+    plans:['nothing yet (free tiers)','ChatGPT Plus · $20','Claude Pro · $20','ChatGPT Pro 5× · $100','Claude Max 5× · $100','ChatGPT Pro 20× · $200','Claude Max 20× · $200','API directly · ~$20/mo','API directly · ~$50/mo','API directly · ~$100/mo','API directly · ~$200/mo','API directly · ~$500/mo','API directly · ~$1,000/mo','API directly · ~$3,000/mo','API directly · ~$10,000/mo'],
+    throttles:['never hit it','sometimes (end of week)','hit the cap most weeks','constantly (2nd account)'],
+    budgets:['up to $1,000','up to $2,000','up to $3,000','up to $5,000','up to $7,500','up to $10,000','up to $15,000','up to $20,000','whatever it takes'],
+    devices:['any device (show all models)','MacBook Air · M-series · 16GB','MacBook Air · M-series · 24GB','MacBook Pro · M3 Max · 48GB','MacBook Pro · M3 Max · 64GB','MacBook Pro · M3 Max · 128GB','Mac Studio · M3 Ultra · 96GB','Mac Studio · M3 Ultra · 256GB (used)','Mac Studio · M3 Ultra · 512GB (used)','1× RTX 4090 · 24GB','1× RTX 5090 · 32GB','2× RTX 4090 · 48GB','2× RTX 5090 · 64GB','8× RTX 3090 · 192GB VRAM','2× M3 Ultra 512GB cluster · 1,024GB'],
+    tierLabels:{1:'autocomplete-only',2:'light agentic',3:'agentic-ready'},
+    tierTip:(coding,params)=>`LiveBench coding ${coding} · ${params}`,
+    vlabel:{green:'buy the rig',blue:'toss-up',amber:'only if you must',orange:'overpriced',red:'just subscribe'},
+    vlabelApi:{green:'buy the rig',blue:'toss-up',amber:'only if you must',orange:'overpriced',red:'just use the API'},
+    maxed:'maxed',
+    cantKeep:"can't keep up",
+    cantKeepTip:hrs=>`Needs ~${hrs} generation-hours/mo, but a month only has ~730. This rig physically can't produce your usage at this volume.`,
+    usageLine:(u,none)=>`→ that's roughly <b>${u}/mo</b> of usage at coding-model API prices. Here's what running it yourself would cost instead`+(none?` <span class="muted">(you're barely scratching the free tier)</span>`:``)+`:`,
+    tnoteApi:`ratio column = cost to run ÷ this model’s own cloud API&nbsp; (under 1.0× = local is cheaper) · models &amp; ◆ tiers from LiveBench, Jun 2026`,
+    tnoteSub:`ratio columns = cost to run ÷ that option&nbsp; (under 1.0× = local is cheaper · “maxed” = your usage tops the plan) · “vs API” = this model’s own cloud API · models &amp; ◆ tiers from LiveBench, Jun 2026`,
+    tnoteFit:` · <b style="color:var(--tx-2)">fit</b> = loads at ~Q4 with KV cache in your device's fast memory (a smaller quant or RAM offload can stretch it). Verdict still assumes you buy the listed rig.`,
+    fitYes:(mem,dev)=>` · <span class="fit-yes" title="Fits: ~${mem}GB needed at Q4, your device has ${dev}GB.">✓ fits</span>`,
+    fitTight:(mem,dev)=>` · <span class="fit-tight" title="Borderline: ~${mem}GB needed at Q4 vs ${dev}GB. It loads, but KV cache and context headroom are tight; you may need a smaller quant or shorter context.">⚠ tight</span>`,
+    fitNo:(mem,dev)=>` · <span class="fit-no" title="Won't fit at Q4: ~${mem}GB needed vs ${dev}GB. Runnable only at a smaller quant (quality loss) or with slow RAM/disk offload.">✗ needs ~${mem}GB</span>`,
+    headers:{
+      model:{title:'Model & rig',body:`The open-weight model, plus a realistic local rig to run it at ~Q4. The ◆ rating is its LiveBench agentic-coding tier (can it actually drive a coding-agent loop). Hover the ◆ for the exact score and params.`},
+      speed:{title:'Speed',body:`Output tokens/sec you would realistically get from this model on that rig. Click the cell to edit.`},
+      rig:{title:'Rig cost',body:`Rough all-in price to buy that hardware. Click the cell to edit.`},
+      power:{title:'Power',body:`Estimated wall power while generating. Click the cell to edit.`},
+      apiPrice:{title:'API price',body:`Blended input/output price for this model's own cloud API in dollars per million tokens. Click the cell to edit.`},
+      cost:{title:'Cost to run',body:`What it actually costs per month to run locally: the hardware price spread over the amortization window, plus electricity for the hours you would spend generating.`},
+      api:{title:'vs its own API',body:`Cost to run locally ÷ what this same model costs through its own cloud API at your usage. Under 1.0× means buying the rig is cheaper than just calling the API.`},
+      g20:{title:'vs ChatGPT Plus ($20/mo)',body:`Cost to run locally ÷ a $20/mo ChatGPT Plus plan. Under 1.0× = local is cheaper. "maxed" = your usage tops this plan's cap (~$700/mo of value), so it cannot serve you.`},
+      c20:{title:'vs Claude Pro ($20/mo)',body:`Cost to run locally ÷ a $20/mo Claude Pro plan (cap ~$400/mo of value). Under 1.0× = local is cheaper. "maxed" = your usage exceeds the cap.`},
+      g100:{title:'vs ChatGPT Pro 5× ($100/mo)',body:`Cost to run locally ÷ a $100/mo ChatGPT plan (cap ~$3,500/mo of value). Under 1.0× = local is cheaper.`},
+      c100:{title:'vs Claude Max 5× ($100/mo)',body:`Cost to run locally ÷ a $100/mo Claude Max plan (cap ~$2,000/mo of value). Under 1.0× = local is cheaper.`},
+      verdict:{title:'Verdict',body:`The bottom line: is buying the rig worth it versus your cheapest real alternative? It blends cost with whether the model can actually do the job. Hover any pill for the full reasoning.`},
+    },
+    explain:{
+      apiMath:(cost,api,ratio)=>`~${cost}/mo rig ÷ ~${api}/mo API = <b>${ratio.toFixed(1)}×</b>`,
+      api:{
+        green:(m,cost,api,tl)=>`Running ${m.name} locally (~<b>${cost}/mo</b>) is cheaper than calling its own API (~<b>${api}/mo</b> at your usage), and it's ${tl}. If you already wire the API into your tools, the rig pays off here.`,
+        blue:(m,cost,api,tl)=>`Local ${m.name} (~<b>${cost}/mo</b>) costs about the same as its API (~<b>${api}/mo</b>). A wash on cost, so pick local for privacy and control, or the API for zero ops.`,
+        amber:(m,cost,api,tl)=>`Cheap to run locally (~<b>${cost}/mo</b> vs ~<b>${api}/mo</b> API), but ${m.name} is <b>${tl}</b> and can't really drive an agent loop. Fine for autocomplete, not a real replacement.`,
+        orange:(m,cost,api,tl)=>`Local ${m.name} (~<b>${cost}/mo</b>) costs more than just calling its API (~<b>${api}/mo</b>). Unless you need it offline or fully local, the API is the better deal.`,
+        red:(m,cost,api,tl)=>`Local ${m.name} (~<b>${cost}/mo</b>) is far more than its API (~<b>${api}/mo</b>) for the same model. Just use the API.`
+      },
+      subTxt:sub=>`<b>${sub.l}</b> ($${sub.price}/mo)`,
+      aSubscription:'a subscription',
+      subMath:(cost,sub,ratio)=>`~${cost}/mo rig ÷ $${sub.price} sub = <b>${ratio.toFixed(1)}×</b>`,
+      outgrown:(m,cost,uStr,tl)=>`Your ~<b>${uStr}/mo</b> of usage is more than any single subscription serves. Even a $200 plan caps out below it, so you'd juggle multiple subs or pay full API to get this much. Owning the ${m.rig} (~<b>${cost}/mo</b> all-in) finally wins, and ${m.name} is ${tl}, capable enough for the job.`,
+      outgrownMath:uStr=>`~${uStr}/mo usage exceeds every sub's cap`,
+      sub:{
+        green:(m,cost,subTxt,ratio,tl)=>`${m.name} runs for ~<b>${cost}/mo</b>, cheaper than ${subTxt} (the cheapest plan that covers your usage), and it's ${tl}, good enough for real work. Worth building.`,
+        blue:(m,cost,subTxt,ratio,tl)=>`Running ${m.name} (~<b>${cost}/mo</b>) costs about the same as ${subTxt} for your usage. On pure cost it's a wash, so it comes down to privacy, control and offline access vs. the convenience of a managed plan.`,
+        amber:(m,cost,subTxt,ratio,tl)=>`The math looks close (~<b>${cost}/mo</b> vs ${subTxt}), but ${m.name} is <b>${tl}</b>: it can't drive an agentic coding loop, so it won't truly replace your sub. Only worth it for autocomplete or offline use.`,
+        orange:(m,cost,subTxt,ratio,tl)=> m.tier<2
+          ? `${m.name} costs ~<b>${cost}/mo</b>, more than ${subTxt}, and it's only <b>${tl}</b>. You'd pay extra for a model that can't really do the job.`
+          : `Running ${m.name} costs ~<b>${cost}/mo</b>, about <b>${ratio.toFixed(1)}×</b> ${subTxt}. Same job, more money. Hard to justify unless you specifically need to run it locally.`,
+        red:(m,cost,subTxt,ratio,tl)=> m.tier<2
+          ? `${m.name} costs ~<b>${cost}/mo</b>, well above ${subTxt}, and it's only ${tl}. No reason to buy hardware for this.`
+          : `Running ${m.name} costs ~<b>${cost}/mo</b>, <b>${ratio.toFixed(1)}×</b> the price of ${subTxt}, which already covers your usage and matches or beats it on coding. Just subscribe.`
+      }
+    }
+  },
+  tr: {
+    title:'shouldirunthis: rig mi alsan, abonelikte mi kalsan?',
+    metaDesc:'Yerel bir yapay zeka rig\'i çalıştırmanın API ya da ChatGPT/Claude aboneliği ödemekten daha mı iyi olduğuna karar vermek için kalibre edilmiş bir hesaplayıcı.',
+    builtBy:'yapan',
+    heroTitle:'bir API ya da aboneliğe ödeme yapmak yerine <span class="muted">kendine bir</span> <span class="rainbow">rig</span> mi almalısın?',
+    ctlPay:'Şu anki planım', ctlAndI:'ve', ctlSpend:'ve bir rig\'e', ctlForRig:'ayırabilirim',
+    devicePick:'Cihazım bunları çalıştırabilir mi?',
+    apiToggle:'Abonelik değil, API kullanıyorum',
+    th:{model:'Model',speed:'Hız',rig:'Rig',power:'Güç',apiPrice:'API fiyatı',cost:'Çalıştırma maliyeti',api:'API\'ye karşı',g20:'GPT\'ye karşı',c20:'Claude\'a karşı',g100:'GPT\'ye karşı',c100:'Claude\'a karşı',verdict:'Karar'},
+    thsub:{model:'kod yazabilir mi? · rig',speed:'token/sn',rig:'yaklaşık',power:'watt',apiPrice:'$/MTok',cost:'/ay · rig÷3yıl + güç',api:'kendi API\'si',g20:'$20 abonelik',c20:'$20 abonelik',g100:'$100 abonelik',c100:'$100 abonelik'},
+    asmHead:'varsayımlar', asmSub:'2026 ortası tahminleri; kendi gerçeğini düzenle',
+    asm:{frontier:'kodlama API\'si $/MTok',ioratio:'girdi:çıktı',elec:'elektrik',amort:'amortisman'},
+    asmUnitMo:'ay',
+    asmNote:'Yüksek bellekli M3 Ultra satırları ikinci el piyasa tahminleridir: Apple şu an M3 Ultra Mac Studio\'yu 96GB ile satıyor; 256GB/512GB yapılandırmaları normal sıfır-alım seçenekleri değil. Varsayılan $5/MTok değeri, yalnızca amiral gemisi Opus/GPT-5.5 değil, bir kodlama-modeli harmanıdır.',
+    quoteText:'“GLM 5.2 harika, ama $200/ay Codex aboneliğim bana $200\'lık GLM API\'sinden daha çok kullanım veriyor. Harika bir tamamlayıcı model, ama yerine geçen değil.”',
+    quoteSource:'@mweinbach kaynak tweet',
+    legVerdict:'karar', legCoding:'kodlama',
+    feedbackQ:'Geri bildirim mi var?', feedbackDm:'X\'ten bana yaz',
+    plans:['henüz hiçbir şey (ücretsiz katmanlar)','ChatGPT Plus · $20','Claude Pro · $20','ChatGPT Pro 5× · $100','Claude Max 5× · $100','ChatGPT Pro 20× · $200','Claude Max 20× · $200','doğrudan API · ~$20/ay','doğrudan API · ~$50/ay','doğrudan API · ~$100/ay','doğrudan API · ~$200/ay','doğrudan API · ~$500/ay','doğrudan API · ~$1,000/ay','doğrudan API · ~$3,000/ay','doğrudan API · ~$10,000/ay'],
+    throttles:['limite neredeyse hiç takılmıyorum','bazen takılıyorum (hafta sonları)','çoğu hafta limite takılıyorum','sürekli takılıyorum (2. hesap)'],
+    budgets:["$1,000'e kadar","$2,000'e kadar","$3,000'e kadar","$5,000'e kadar","$7,500'e kadar","$10,000'e kadar","$15,000'e kadar","$20,000'e kadar",'ne gerekiyorsa'],
+    devices:['herhangi bir cihaz (tüm modelleri göster)','MacBook Air · M serisi · 16GB','MacBook Air · M serisi · 24GB','MacBook Pro · M3 Max · 48GB','MacBook Pro · M3 Max · 64GB','MacBook Pro · M3 Max · 128GB','Mac Studio · M3 Ultra · 96GB','Mac Studio · M3 Ultra · 256GB (ikinci el)','Mac Studio · M3 Ultra · 512GB (ikinci el)','1× RTX 4090 · 24GB','1× RTX 5090 · 32GB','2× RTX 4090 · 48GB','2× RTX 5090 · 64GB','8× RTX 3090 · 192GB VRAM','2× M3 Ultra 512GB küme · 1,024GB'],
+    tierLabels:{1:'yalnızca otomatik tamamlama',2:'hafif ajantik',3:'ajan döngüsüne hazır'},
+    tierTip:(coding,params)=>`LiveBench kodlama ${coding} · ${params}`,
+    vlabel:{green:"rig'i al",blue:'başa baş',amber:'mecbursan',orange:'fazla pahalı',red:'abone ol yeter'},
+    vlabelApi:{green:"rig'i al",blue:'başa baş',amber:'mecbursan',orange:'fazla pahalı',red:"API'yi kullan yeter"},
+    maxed:'aşıldı',
+    cantKeep:'yetişemiyor',
+    cantKeepTip:hrs=>`Ayda ~${hrs} üretim-saati gerekir ama bir ayda yalnızca ~730 saat var. Bu rig, kullanımınızı bu hacimde fiziksel olarak üretemez.`,
+    usageLine:(u,none)=>`→ bu, kodlama-modeli API fiyatlarıyla kabaca <b>${u}/ay</b> kullanım demek. İşte aynısını kendiniz çalıştırmanın maliyeti`+(none?` <span class="muted">(ücretsiz katmanı ancak zar zor kullanıyorsunuz)</span>`:``)+`:`,
+    tnoteApi:`oran sütunu = çalıştırma maliyeti ÷ bu modelin kendi bulut API'si&nbsp; (1.0× altı = yerel daha ucuz) · modeller &amp; ◆ seviyeleri LiveBench, Haz 2026`,
+    tnoteSub:`oran sütunları = çalıştırma maliyeti ÷ o seçenek&nbsp; (1.0× altı = yerel daha ucuz · “aşıldı” = kullanımınız planı aşıyor) · “API'ye karşı” = bu modelin kendi bulut API'si · modeller &amp; ◆ seviyeleri LiveBench, Haz 2026`,
+    tnoteFit:` · <b style="color:var(--tx-2)">uyum</b> = cihazınızın hızlı belleğinde ~Q4'te KV önbelleğiyle yüklenir (daha küçük bir kuantizasyon veya RAM'e taşıma bunu esnetebilir). Karar yine de listelenen rig'i aldığınızı varsayar.`,
+    fitYes:(mem,dev)=>` · <span class="fit-yes" title="Uyar: Q4'te ~${mem}GB gerekir, cihazınızda ${dev}GB var.">✓ uyar</span>`,
+    fitTight:(mem,dev)=>` · <span class="fit-tight" title="Sınırda: Q4'te ~${mem}GB'a karşı ${dev}GB. Yüklenir ama KV önbelleği ve bağlam payı dardır; daha küçük bir kuantizasyon ya da daha kısa bağlam gerekebilir.">⚠ sınırda</span>`,
+    fitNo:(mem,dev)=>` · <span class="fit-no" title="Q4'te sığmaz: ~${mem}GB'a karşı ${dev}GB gerekir. Yalnızca daha küçük kuantizasyonda (kalite kaybı) ya da yavaş RAM/disk taşımayla çalışır.">✗ ~${mem}GB gerekir</span>`,
+    headers:{
+      model:{title:'Model ve rig',body:`Açık ağırlıklı model ve onu ~Q4'te çalıştıracak gerçekçi bir yerel rig. ◆ derecesi, modelin LiveBench ajantik-kodlama seviyesidir (bir kodlama-ajan döngüsünü gerçekten sürdürebilir mi). Tam puan ve parametreler için ◆ üzerine gelin.`},
+      speed:{title:'Hız',body:`Bu modelden o rig üzerinde gerçekçi biçimde alacağınız çıktı token/sn. Düzenlemek için hücreye tıklayın.`},
+      rig:{title:'Rig maliyeti',body:`O donanımı almanın kabaca her şey dahil fiyatı. Düzenlemek için hücreye tıklayın.`},
+      power:{title:'Güç',body:`Üretim sırasında tahmini priz gücü. Düzenlemek için hücreye tıklayın.`},
+      apiPrice:{title:'API fiyatı',body:`Bu modelin kendi bulut API'sinin milyon token başına dolar cinsinden harmanlanmış girdi/çıktı fiyatı. Düzenlemek için hücreye tıklayın.`},
+      cost:{title:'Çalıştırma maliyeti',body:`Yerelde çalıştırmanın aylık gerçek maliyeti: amortisman süresine yayılan donanım fiyatı, artı üretimle geçireceğiniz saatlerin elektriği.`},
+      api:{title:'kendi API\'sine karşı',body:`Yerelde çalıştırma maliyeti ÷ aynı modelin kendi bulut API'sinde sizin kullanımınızdaki maliyeti. 1.0× altı, rig almanın API çağırmaktan ucuz olduğu anlamına gelir.`},
+      g20:{title:'ChatGPT Plus\'a karşı ($20/ay)',body:`Yerelde çalıştırma maliyeti ÷ $20/ay ChatGPT Plus planı. 1.0× altı = yerel daha ucuz. "aşıldı" = kullanımınız bu planın tavanını aşıyor (~$700/ay değer), yani size yetmez.`},
+      c20:{title:'Claude Pro\'a karşı ($20/ay)',body:`Yerelde çalıştırma maliyeti ÷ $20/ay Claude Pro planı (tavan ~$400/ay değer). 1.0× altı = yerel daha ucuz. "aşıldı" = kullanımınız tavanı geçiyor.`},
+      g100:{title:'ChatGPT Pro 5×\'e karşı ($100/ay)',body:`Yerelde çalıştırma maliyeti ÷ $100/ay ChatGPT planı (tavan ~$3,500/ay değer). 1.0× altı = yerel daha ucuz.`},
+      c100:{title:'Claude Max 5×\'e karşı ($100/ay)',body:`Yerelde çalıştırma maliyeti ÷ $100/ay Claude Max planı (tavan ~$2,000/ay değer). 1.0× altı = yerel daha ucuz.`},
+      verdict:{title:'Karar',body:`Özet: rig almak, en ucuz gerçek alternatifinize kıyasla buna değer mi? Maliyeti, modelin işi gerçekten yapıp yapamayacağıyla harmanlar. Tam gerekçe için herhangi bir hapın üzerine gelin.`},
+    },
+    explain:{
+      apiMath:(cost,api,ratio)=>`~${cost}/ay rig ÷ ~${api}/ay API = <b>${ratio.toFixed(1)}×</b>`,
+      api:{
+        green:(m,cost,api,tl)=>`${m.name} modelini yerelde çalıştırmak (~<b>${cost}/ay</b>), kendi API'sini çağırmaktan (kullanımınızda ~<b>${api}/ay</b>) daha ucuz ve ${tl}. API'yi zaten araçlarınıza bağladıysanız, rig burada kendini amorti eder.`,
+        blue:(m,cost,api,tl)=>`Yerel ${m.name} (~<b>${cost}/ay</b>), kendi API'siyle (~<b>${api}/ay</b>) aşağı yukarı aynı maliyette. Maliyette başa baş; gizlilik ve kontrol için yereli, sıfır operasyon için API'yi seçin.`,
+        amber:(m,cost,api,tl)=>`Yerelde çalıştırması ucuz (~<b>${cost}/ay</b>'a karşı ~<b>${api}/ay</b> API), ama ${m.name} <b>${tl}</b> ve gerçek bir ajan döngüsü süremez. Otomatik tamamlama için iyi, gerçek bir alternatif değil.`,
+        orange:(m,cost,api,tl)=>`Yerel ${m.name} (~<b>${cost}/ay</b>), yalnızca API'sini çağırmaktan (~<b>${api}/ay</b>) daha pahalı. Çevrimdışı ya da tamamen yerel olması gerekmiyorsa, API daha iyi.`,
+        red:(m,cost,api,tl)=>`Yerel ${m.name} (~<b>${cost}/ay</b>), aynı model için API'sinden (~<b>${api}/ay</b>) çok daha pahalı. API'yi kullan yeter.`
+      },
+      subTxt:sub=>`<b>${sub.l}</b> ($${sub.price}/ay)`,
+      aSubscription:'bir abonelik',
+      subMath:(cost,sub,ratio)=>`~${cost}/ay rig ÷ $${sub.price} abonelik = <b>${ratio.toFixed(1)}×</b>`,
+      outgrown:(m,cost,uStr,tl)=>`~<b>${uStr}/ay</b> kullanımınız, tek bir aboneliğin sunabileceğinden fazla. $200'lük bir plan bile altında kalıyor, yani bu kadarını almak için birden çok aboneliği bir arada kullanır ya da tam API ödersiniz. ${m.rig} sahibi olmak (~<b>${cost}/ay</b> her şey dahil) nihayet kazanıyor ve ${m.name} ${tl}, iş için yeterince yetenekli.`,
+      outgrownMath:uStr=>`~${uStr}/ay kullanım her aboneliğin tavanını aşıyor`,
+      sub:{
+        green:(m,cost,subTxt,ratio,tl)=>`${m.name} ~<b>${cost}/ay</b>'a çalışıyor; ${subTxt} planından (kullanımınızı karşılayan en ucuz plan) daha ucuz ve ${tl}, gerçek iş için yeterli. Kurmaya değer.`,
+        blue:(m,cost,subTxt,ratio,tl)=>`${m.name} çalıştırmak (~<b>${cost}/ay</b>), kullanımınız için ${subTxt} ile aşağı yukarı aynı maliyette. Salt maliyette başa baş; iş gizlilik, kontrol ve çevrimdışı erişime karşı yönetilen bir planın rahatlığına kalıyor.`,
+        amber:(m,cost,subTxt,ratio,tl)=>`Hesap yakın görünüyor (~<b>${cost}/ay</b>'a karşı ${subTxt}), ama ${m.name} <b>${tl}</b>: ajantik bir kodlama döngüsü süremez, yani aboneliğinizin gerçek yerini tutmaz. Yalnızca otomatik tamamlama veya çevrimdışı kullanım için değer.`,
+        orange:(m,cost,subTxt,ratio,tl)=> m.tier<2
+          ? `${m.name} ~<b>${cost}/ay</b>'a mal oluyor; ${subTxt} planından pahalı ve yalnızca <b>${tl}</b>. İşi gerçekten yapamayan bir model için fazladan ödersiniz.`
+          : `${m.name} çalıştırmak ~<b>${cost}/ay</b>, ${subTxt} planının yaklaşık <b>${ratio.toFixed(1)}×</b>'i. Aynı iş, daha çok para. Özellikle yerelde çalıştırmanız gerekmiyorsa savunması zor.`,
+        red:(m,cost,subTxt,ratio,tl)=> m.tier<2
+          ? `${m.name} ~<b>${cost}/ay</b>'a mal oluyor; ${subTxt} planının hayli üstünde ve yalnızca ${tl}. Bunun için donanım almanın anlamı yok.`
+          : `${m.name} çalıştırmak ~<b>${cost}/ay</b>, ${subTxt} fiyatının <b>${ratio.toFixed(1)}×</b>'i; o plan kullanımınızı zaten karşılıyor ve kodlamada eşit ya da daha iyi. Abone ol yeter.`
+      }
+    }
+  }
+};
+let LANG='en';
+const T=()=>I18N[LANG];
+const tstr=p=>p.split('.').reduce((o,k)=>(o==null?o:o[k]), T());
+const cap=s=>s?s.charAt(0).toLocaleUpperCase(LANG)+s.slice(1):s;
+const tierLabel=t=>T().tierLabels[t];
+function applyStatic(){
+  document.querySelectorAll('[data-i18n]').forEach(el=>{ const v=tstr(el.getAttribute('data-i18n')); if(typeof v==='string') el.textContent=v; });
+  document.querySelectorAll('[data-i18n-html]').forEach(el=>{ const v=tstr(el.getAttribute('data-i18n-html')); if(typeof v==='string') el.innerHTML=v; });
+}
+function applyLang(){
+  document.documentElement.lang=LANG;
+  document.title=T().title;
+  const md=document.querySelector('meta[name="description"]'); if(md) md.setAttribute('content',T().metaDesc);
+  const ol=document.querySelector('meta[property="og:locale"]'); if(ol) ol.setAttribute('content', LANG==='tr'?'tr_TR':'en_US');
+  const ls=document.getElementById('lang'); if(ls) ls.value=LANG;
+  applyStatic(); fillSelects(); buildTable(); recompute();
+}
+function setLang(l){ LANG=(l==='tr')?'tr':'en'; try{localStorage.setItem('sirt_lang',LANG);}catch(e){} writeURL(); applyLang(); }
 
 const PLANS = [
   {l:'nothing yet (free tiers)',  cap:50, none:true},
@@ -380,60 +563,28 @@ function verdict(ratio, tier, outgrown){
   if(ratio<=3) return 'orange';
   return 'red';
 }
-const VLABEL={green:'buy the rig',blue:'toss-up',amber:'only if you must',orange:'overpriced',red:'just subscribe'};
-const VLABEL_API={green:'buy the rig',blue:'toss-up',amber:'only if you must',orange:'overpriced',red:'just use the API'};
-const HEADERS={
-  model:{title:'Model & rig',body:`The open-weight model, plus a realistic local rig to run it at ~Q4. The ◆ rating is its LiveBench agentic-coding tier (can it actually drive a coding-agent loop). Hover the ◆ for the exact score and params.`},
-  speed:{title:'Speed',body:`Output tokens/sec you would realistically get from this model on that rig. Click the cell to edit.`},
-  rig:{title:'Rig cost',body:`Rough all-in price to buy that hardware. Click the cell to edit.`},
-  power:{title:'Power',body:`Estimated wall power while generating. Click the cell to edit.`},
-  apiPrice:{title:'API price',body:`Blended input/output price for this model's own cloud API in dollars per million tokens. Click the cell to edit.`},
-  cost:{title:'Cost to run',body:`What it actually costs per month to run locally: the hardware price spread over the amortization window, plus electricity for the hours you would spend generating.`},
-  api:{title:'vs its own API',body:`Cost to run locally ÷ what this same model costs through its own cloud API at your usage. Under 1.0× means buying the rig is cheaper than just calling the API.`},
-  g20:{title:'vs ChatGPT Plus ($20/mo)',body:`Cost to run locally ÷ a $20/mo ChatGPT Plus plan. Under 1.0× = local is cheaper. "maxed" = your usage tops this plan's cap (~$700/mo of value), so it cannot serve you.`},
-  c20:{title:'vs Claude Pro ($20/mo)',body:`Cost to run locally ÷ a $20/mo Claude Pro plan (cap ~$400/mo of value). Under 1.0× = local is cheaper. "maxed" = your usage exceeds the cap.`},
-  g100:{title:'vs ChatGPT Pro 5× ($100/mo)',body:`Cost to run locally ÷ a $100/mo ChatGPT plan (cap ~$3,500/mo of value). Under 1.0× = local is cheaper.`},
-  c100:{title:'vs Claude Max 5× ($100/mo)',body:`Cost to run locally ÷ a $100/mo Claude Max plan (cap ~$2,000/mo of value). Under 1.0× = local is cheaper.`},
-  verdict:{title:'Verdict',body:`The bottom line: is buying the rig worth it versus your cheapest real alternative? It blends cost with whether the model can actually do the job. Hover any pill for the full reasoning.`},
-};
+/* verdict labels now live in I18N (T().vlabel / T().vlabelApi) */
+/* header tooltips now live in I18N (T().headers) */
 const ratioCls=r=>r<0.8?'r-good':r<=1.3?'r-ok':r<=3?'r-warn':'r-terr';
 const cssVar={green:'--green',blue:'--blue',amber:'--amber',orange:'--orange',red:'--red'};
 function fitState(m,dm){ if(dm>=m.mem*1.06) return 'yes'; if(dm>=m.mem) return 'tight'; return 'no'; }
 
 function explain(m, lm, sub, ratio, v, outgrown, u, noSubs, apiMo){
-  const C=cssVar[v], cost=fmt$(lm), tl=TIER[m.tier].label;
+  const C=cssVar[v], cost=fmt$(lm), tl=tierLabel(m.tier), E=T().explain;
   if(noSubs){
     const api=fmt$(apiMo);
-    let t=VLABEL_API[v]; t=t.charAt(0).toUpperCase()+t.slice(1);
-    let b='', mth=`~${cost}/mo rig ÷ ~${api}/mo API = <b>${ratio.toFixed(1)}×</b>`;
-    if(v==='green') b=`Running ${m.name} locally (~<b>${cost}/mo</b>) is cheaper than calling its own API (~<b>${api}/mo</b> at your usage), and it's ${tl}. If you already wire the API into your tools, the rig pays off here.`;
-    else if(v==='blue') b=`Local ${m.name} (~<b>${cost}/mo</b>) costs about the same as its API (~<b>${api}/mo</b>). A wash on cost, so pick local for privacy and control, or the API for zero ops.`;
-    else if(v==='amber') b=`Cheap to run locally (~<b>${cost}/mo</b> vs ~<b>${api}/mo</b> API), but ${m.name} is <b>${tl}</b> and can't really drive an agent loop. Fine for autocomplete, not a real replacement.`;
-    else if(v==='orange') b=`Local ${m.name} (~<b>${cost}/mo</b>) costs more than just calling its API (~<b>${api}/mo</b>). Unless you need it offline or fully local, the API is the better deal.`;
-    else b=`Local ${m.name} (~<b>${cost}/mo</b>) is far more than its API (~<b>${api}/mo</b>) for the same model. Just use the API.`;
-    return {C, title:t, body:b, math:mth};
+    return {C, title:cap(T().vlabelApi[v]), body:E.api[v](m,cost,api,tl), math:E.apiMath(cost,api,ratio)};
   }
-  const subTxt = sub ? `<b>${sub.l}</b> ($${sub.price}/mo)` : 'a subscription';
-  let title=VLABEL[v]; title=title.charAt(0).toUpperCase()+title.slice(1);
-  let body='', math = sub ? `~${cost}/mo rig ÷ $${sub.price} sub = <b>${ratio.toFixed(1)}×</b>` : '';
+  const subTxt = sub ? E.subTxt(sub) : E.aSubscription;
+  let title=cap(T().vlabel[v]);
+  let math = sub ? E.subMath(cost,sub,ratio) : '';
+  let body;
   if(outgrown && m.tier>=2){
-    title='Buy the rig';
-    body=`Your ~<b>${fmt$(u)}/mo</b> of usage is more than any single subscription serves. Even a $200 plan caps out below it, so you'd juggle multiple subs or pay full API to get this much. Owning the ${m.rig} (~<b>${cost}/mo</b> all-in) finally wins, and ${m.name} is ${tl}, capable enough for the job.`;
-    math=`~${fmt$(u)}/mo usage exceeds every sub's cap`;
-  } else if(v==='green'){
-    body=`${m.name} runs for ~<b>${cost}/mo</b>, cheaper than ${subTxt} (the cheapest plan that covers your usage), and it's ${tl}, good enough for real work. Worth building.`;
-  } else if(v==='blue'){
-    body=`Running ${m.name} (~<b>${cost}/mo</b>) costs about the same as ${subTxt} for your usage. On pure cost it's a wash, so it comes down to privacy, control and offline access vs. the convenience of a managed plan.`;
-  } else if(v==='amber'){
-    body=`The math looks close (~<b>${cost}/mo</b> vs ${subTxt}), but ${m.name} is <b>${tl}</b>: it can't drive an agentic coding loop, so it won't truly replace your sub. Only worth it for autocomplete or offline use.`;
-  } else if(v==='orange'){
-    body = m.tier<2
-      ? `${m.name} costs ~<b>${cost}/mo</b>, more than ${subTxt}, and it's only <b>${tl}</b>. You'd pay extra for a model that can't really do the job.`
-      : `Running ${m.name} costs ~<b>${cost}/mo</b>, about <b>${ratio.toFixed(1)}×</b> ${subTxt}. Same job, more money. Hard to justify unless you specifically need to run it locally.`;
+    title=cap(T().vlabel.green);
+    body=E.outgrown(m,cost,fmt$(u),tl);
+    math=E.outgrownMath(fmt$(u));
   } else {
-    body = m.tier<2
-      ? `${m.name} costs ~<b>${cost}/mo</b>, well above ${subTxt}, and it's only ${tl}. No reason to buy hardware for this.`
-      : `Running ${m.name} costs ~<b>${cost}/mo</b>, <b>${ratio.toFixed(1)}×</b> the price of ${subTxt}, which already covers your usage and matches or beats it on coding. Just subscribe.`;
+    body=E.sub[v](m,cost,subTxt,ratio,tl);
   }
   return {C, title, body, math};
 }
@@ -442,21 +593,33 @@ let planIdx=4, thrIdx=2, budIdx=5, noSubs=false, devIdx=0, RAT=[];
 const usage=()=>usageDollars(PLANS[planIdx],THROTTLES[thrIdx]);
 const fmt$=n=>'$'+Math.round(n).toLocaleString();
 const MONTHHRS=730;
-function writeURL(){ try{ history.replaceState(null,'','?'+new URLSearchParams({p:planIdx,t:thrIdx,b:budIdx,s:noSubs?1:0,d:devIdx}).toString()); }catch(e){} }
+function writeURL(){ try{ history.replaceState(null,'','?'+new URLSearchParams({p:planIdx,t:thrIdx,b:budIdx,s:noSubs?1:0,d:devIdx,l:LANG}).toString()); }catch(e){} }
 
-function buildSelects(){
+function wireSelects(){
   const p=document.getElementById('plan'), t=document.getElementById('throttle');
   const b=document.getElementById('budget'), d=document.getElementById('device');
-  PLANS.forEach((x,i)=>{const o=document.createElement('option');o.value=i;o.textContent=x.l;p.appendChild(o);});
-  THROTTLES.forEach((x,i)=>{const o=document.createElement('option');o.value=i;o.textContent=x.l;t.appendChild(o);});
-  BUDGETS.forEach((x,i)=>{const o=document.createElement('option');o.value=i;o.textContent=x.l;b.appendChild(o);});
-  DEVICES.forEach((x,i)=>{const o=document.createElement('option');o.value=i;o.textContent=x.l;d.appendChild(o);});
-  p.value=planIdx; t.value=thrIdx; b.value=budIdx; d.value=devIdx;
   p.oninput=e=>{planIdx=+e.target.value;recompute();writeURL();};
   t.oninput=e=>{thrIdx=+e.target.value;recompute();writeURL();};
   b.oninput=e=>{budIdx=+e.target.value;recompute();writeURL();};
   d.oninput=e=>{devIdx=+e.target.value;recompute();writeURL();};
   document.getElementById('noSubs').oninput=e=>{noSubs=e.target.checked;recompute();writeURL();};
+  const ls=document.getElementById('lang');
+  if(ls){
+    if(!ls.options.length){ [['en','English'],['tr','Türkçe']].forEach(([v,txt])=>{const o=document.createElement('option');o.value=v;o.textContent=txt;ls.appendChild(o);}); }
+    ls.value=LANG;
+    ls.oninput=e=>setLang(e.target.value);
+  }
+}
+function fillSelect(el, labels, idx){
+  el.innerHTML='';
+  labels.forEach((l,i)=>{const o=document.createElement('option');o.value=i;o.textContent=l;el.appendChild(o);});
+  el.value=idx;
+}
+function fillSelects(){
+  fillSelect(document.getElementById('plan'), T().plans, planIdx);
+  fillSelect(document.getElementById('throttle'), T().throttles, thrIdx);
+  fillSelect(document.getElementById('budget'), T().budgets, budIdx);
+  fillSelect(document.getElementById('device'), T().devices, devIdx);
 }
 function buildAssumptions(){
   const bind=(id,key,min)=>{
@@ -476,7 +639,7 @@ function buildTable(){
     tr.innerHTML=`
       <td class="model">
         <div class="nm">${m.name}</div>
-        <div class="meta"><span class="tier" title="LiveBench coding ${m.coding} · ${m.params}">${TIER[m.tier].g}</span>${TIER[m.tier].label} · ${m.rig}<span class="fitbadge" id="fit-${i}"></span></div></td>
+        <div class="meta"><span class="tier" title="${T().tierTip(m.coding,m.params)}">${TIER[m.tier].g}</span>${tierLabel(m.tier)} · ${m.rig}<span class="fitbadge" id="fit-${i}"></span></div></td>
       <td class="mobile-hide"><span class="edit"><input id="spd-${i}" type="number" min="1" value="${m.tps}"><span class="u">t/s</span></span></td>
       <td class="mobile-hide"><span class="edit"><span class="u">$</span><input id="rig-${i}" type="number" min="0" step="100" value="${m.capex}" style="width:72px"></span></td>
       <td class="advcol"><span class="edit"><input id="watt-${i}" type="number" min="0" step="10" value="${m.watts}" style="width:62px"><span class="u">W</span></span></td>
@@ -502,36 +665,31 @@ function recompute(){
   document.getElementById('noSubs').disabled=isApi;
   document.getElementById('noSubsLabel').classList.toggle('locked', isApi);
   document.getElementById('tbl').classList.toggle('hide-subs', apiMode);
-  document.getElementById('tnote').innerHTML = apiMode
-    ? `ratio column = cost to run ÷ this model’s own cloud API&nbsp; (under 1.0× = local is cheaper) · models &amp; ◆ tiers from LiveBench, Jun 2026`
-    : `ratio columns = cost to run ÷ that option&nbsp; (under 1.0× = local is cheaper · “maxed” = your usage tops the plan) · “vs API” = this model’s own cloud API · models &amp; ◆ tiers from LiveBench, Jun 2026`;
-  if(dev.mem!=null){ document.getElementById('tnote').innerHTML += ` · <b style="color:var(--tx-2)">fit</b> = loads at ~Q4 with KV cache in your device's fast memory (a smaller quant or RAM offload can stretch it). Verdict still assumes you buy the listed rig.`; }
-  document.getElementById('usageLine').innerHTML =
-    `→ that's roughly <b>${fmt$(u)}/mo</b> of usage at coding-model API prices. ` +
-    `Here's what running it yourself would cost instead` +
-    (PLANS[planIdx].none?` <span class="muted">(you're barely scratching the free tier)</span>`:``) + `:`;
+  document.getElementById('tnote').innerHTML = apiMode ? T().tnoteApi : T().tnoteSub;
+  if(dev.mem!=null){ document.getElementById('tnote').innerHTML += T().tnoteFit; }
+  document.getElementById('usageLine').innerHTML = T().usageLine(fmt$(u), !!PLANS[planIdx].none);
   MODELS.forEach((m,i)=>{
     const lm=localMonthly(m);
     const genHrs=((u/CONST.FRONTIER)*1e6)/(1+CONST.IORATIO)/m.tps/3600, cantKeepUp=genHrs>MONTHHRS;
-    document.getElementById('loc-'+i).innerHTML=`<span class="val">~${fmt$(lm)}</span>`+(cantKeepUp?`<span class="cantkeep" title="Needs ~${Math.round(genHrs)} generation-hours/mo, but a month only has ~730. This rig physically can't produce your usage at this volume.">can't keep up</span>`:'');
+    document.getElementById('loc-'+i).innerHTML=`<span class="val">~${fmt$(lm)}</span>`+(cantKeepUp?`<span class="cantkeep" title="${T().cantKeepTip(Math.round(genHrs))}">${T().cantKeep}</span>`:'');
     const apiMo=(u/CONST.FRONTIER)*m.api, ra=lm/apiMo;
     document.getElementById('api-'+i).innerHTML=`<span class="val ${ratioCls(ra)}">${ra.toFixed(ra<10?1:0)}</span><span class="unit">×</span>`;
     COLS.forEach(col=>{
       const el=document.getElementById(col.key+'-'+i);
-      if(u>col.cap){ el.innerHTML='<span class="muted">maxed</span>'; }
+      if(u>col.cap){ el.innerHTML=`<span class="muted">${T().maxed}</span>`; }
       else{ const r=lm/col.price; el.innerHTML=`<span class="val ${ratioCls(r)}">${r.toFixed(r<10?1:0)}</span><span class="unit">×</span>`; }
     });
     let ratio, v, label;
-    if(apiMode){ ratio=ra; v=verdict(ratio,m.tier,false); label=VLABEL_API[v]; }
-    else { ratio=sub?lm/sub.price:0; v=verdict(ratio,m.tier,outgrown); label=(outgrown&&m.tier>=2)?'buy the rig':VLABEL[v]; }
+    if(apiMode){ ratio=ra; v=verdict(ratio,m.tier,false); label=T().vlabelApi[v]; }
+    else { ratio=sub?lm/sub.price:0; v=verdict(ratio,m.tier,outgrown); label=(outgrown&&m.tier>=2)?T().vlabel.green:T().vlabel[v]; }
     RAT[i]=explain(m, lm, sub, ratio, v, outgrown, u, apiMode, apiMo);
     document.getElementById('vd-'+i).innerHTML=`<span class="vpill v-${v}" data-i="${i}">${label}</span>`;
     const fb=document.getElementById('fit-'+i), row=document.getElementById('row-'+i);
     if(dev.mem==null){ fb.innerHTML=''; row.classList.remove('nofit'); }
     else{ const fs=fitState(m,dev.mem);
-      if(fs==='yes'){ fb.innerHTML=` · <span class="fit-yes" title="Fits: ~${m.mem}GB needed at Q4, your device has ${dev.mem}GB.">✓ fits</span>`; row.classList.remove('nofit'); }
-      else if(fs==='tight'){ fb.innerHTML=` · <span class="fit-tight" title="Borderline: ~${m.mem}GB needed at Q4 vs ${dev.mem}GB. It loads, but KV cache and context headroom are tight; you may need a smaller quant or shorter context.">⚠ tight</span>`; row.classList.remove('nofit'); }
-      else{ fb.innerHTML=` · <span class="fit-no" title="Won't fit at Q4: ~${m.mem}GB needed vs ${dev.mem}GB. Runnable only at a smaller quant (quality loss) or with slow RAM/disk offload.">✗ needs ~${m.mem}GB</span>`; row.classList.add('nofit'); }
+      if(fs==='yes'){ fb.innerHTML=T().fitYes(m.mem,dev.mem); row.classList.remove('nofit'); }
+      else if(fs==='tight'){ fb.innerHTML=T().fitTight(m.mem,dev.mem); row.classList.remove('nofit'); }
+      else{ fb.innerHTML=T().fitNo(m.mem,dev.mem); row.classList.add('nofit'); }
     }
     document.getElementById('row-'+i).classList.toggle('over', m.capex>BUDGETS[budIdx].v);
   });
@@ -541,8 +699,13 @@ function recompute(){
   if((v=gi('t',THROTTLES.length-1))!==null)thrIdx=v;
   if((v=gi('b',BUDGETS.length-1))!==null)budIdx=v;
   if(q.get('s')==='1')noSubs=true;
-  if((v=gi('d',DEVICES.length-1))!==null)devIdx=v; })();
-buildSelects(); buildAssumptions(); buildTable(); recompute();
+  if((v=gi('d',DEVICES.length-1))!==null)devIdx=v;
+  const lp=q.get('l');
+  if(lp==='tr'||lp==='en'){ LANG=lp; }
+  else { let st=null; try{st=localStorage.getItem('sirt_lang');}catch(e){}
+    if(st==='tr'||st==='en'){ LANG=st; }
+    else if((((typeof navigator!=='undefined'&&(navigator.language||navigator.userLanguage))||'')+'').toLowerCase().indexOf('tr')===0){ LANG='tr'; } } })();
+wireSelects(); buildAssumptions(); applyLang();
 
 (function(){
   const pop=document.getElementById('pop');
@@ -561,7 +724,7 @@ buildSelects(); buildAssumptions(); buildTable(); recompute();
     pop.style.top=top+'px';
   }
   const hide=()=>pop.classList.remove('show');
-  const htmlFor=el=>el.matches('.vpill')?(RAT[+el.dataset.i]&&pillHtml(RAT[+el.dataset.i])):(HEADERS[el.dataset.h]&&headerHtml(HEADERS[el.dataset.h]));
+  const htmlFor=el=>{ if(el.matches('.vpill')){ const r=RAT[+el.dataset.i]; return r&&pillHtml(r); } const h=T().headers[el.dataset.h]; return h&&headerHtml(h); };
   const tb=document.getElementById('tbody'), thead=document.getElementById('tbl').tHead;
   // desktop: hover
   tb.addEventListener('mouseover', e=>{ const p=e.target.closest('.vpill'); if(p){const h=htmlFor(p); if(h) showAt(p,h);} });
@@ -576,8 +739,8 @@ buildSelects(); buildAssumptions(); buildTable(); recompute();
 (function(){
   const EMOJI=['🤖','💸','🔥','⚡','🖥️','🧠','💰','🚀','✨','🎉','💀','📉','🤔','🦾','🪙','🍌','📈','🧮'];
   const reduceMotion=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const rig=document.querySelector('.rainbow'); if(!rig) return;
-  rig.addEventListener('click', ()=>{
+  document.addEventListener('click', (ev)=>{
+    const rig=ev.target.closest&&ev.target.closest('.rainbow'); if(!rig) return;
     if(reduceMotion) return;
     const r=rig.getBoundingClientRect(), x=r.left+r.width/2, y=r.top+r.height/2;
     for(let i=0;i<24;i++){
