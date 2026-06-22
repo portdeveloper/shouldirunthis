@@ -104,7 +104,14 @@
   .assump-grid label{display:flex;align-items:center;justify-content:space-between;gap:10px;color:var(--tx-2);font-size:12.5px;min-width:0}
   .assump-grid .edit input{width:58px;font-size:13px}
   .assump-note{margin:12px 0 0;line-height:1.55}
-  .tabletools{display:flex;justify-content:flex-end;margin:16px 0 0}
+  .tabletools{display:flex;align-items:center;justify-content:space-between;gap:12px 18px;margin:16px 0 0;flex-wrap:wrap}
+  .device-pick{display:flex;align-items:center;gap:10px;font-size:13px;color:var(--tx-2);flex-wrap:wrap}
+  .device-pick>span{white-space:nowrap}
+  .device-pick .chip select{font-size:13px;font-weight:650;padding:6px 30px 6px 12px;border-radius:9px;max-width:300px}
+  .device-pick .chip .car{right:11px}
+  .fitbadge{font-weight:600;cursor:help}
+  .fit-yes{color:var(--green)} .fit-tight{color:var(--amber)} .fit-no{color:var(--red)}
+  tbody tr.nofit td.model .nm{color:var(--tx-2)}
   .tgl{display:inline-flex;align-items:center;gap:10px;font-size:13px;color:var(--tx-2);cursor:pointer;user-select:none}
   .tgl:hover{color:var(--tx)}
   .tgl.locked{cursor:default;color:var(--tx-3)}
@@ -211,7 +218,10 @@
       <div class="usage-line" id="usageLine"></div>
     </section>
 
-    <div class="tabletools"><label class="tgl" id="noSubsLabel"><span>I use the API, not subscriptions</span><input type="checkbox" id="noSubs"><span class="switch" aria-hidden="true"></span></label></div>
+    <div class="tabletools">
+      <label class="device-pick"><span>Can my device run these?</span><span class="chip"><select id="device" aria-label="Your device"></select><span class="car">▾</span></span></label>
+      <label class="tgl" id="noSubsLabel"><span>I use the API, not subscriptions</span><input type="checkbox" id="noSubs"><span class="switch" aria-hidden="true"></span></label>
+    </div>
     <div class="table-wrap">
       <table id="tbl">
         <thead>
@@ -309,6 +319,24 @@ const BUDGETS = [
   {l:'up to $20,000',    v:20000},
   {l:'whatever it takes', v:Infinity},
 ];
+// Memory to load each model at ~Q4 with a working KV cache (GB, conservative). Source: CALIBRATION.md fit-at-Q4 notes.
+const DEVICES = [
+  {l:'any device (show all models)',          mem:null},
+  {l:'MacBook Air · M-series · 16GB',         mem:16},
+  {l:'MacBook Air · M-series · 24GB',         mem:24},
+  {l:'MacBook Pro · M3 Max · 48GB',           mem:48},
+  {l:'MacBook Pro · M3 Max · 64GB',           mem:64},
+  {l:'MacBook Pro · M3 Max · 128GB',          mem:128},
+  {l:'Mac Studio · M3 Ultra · 96GB',          mem:96},
+  {l:'Mac Studio · M3 Ultra · 256GB (used)',  mem:256},
+  {l:'Mac Studio · M3 Ultra · 512GB (used)',  mem:512},
+  {l:'1× RTX 4090 · 24GB',                    mem:24},
+  {l:'1× RTX 5090 · 32GB',                    mem:32},
+  {l:'2× RTX 4090 · 48GB',                    mem:48},
+  {l:'2× RTX 5090 · 64GB',                    mem:64},
+  {l:'8× RTX 3090 · 192GB VRAM',              mem:192},
+  {l:'2× M3 Ultra 512GB cluster · 1,024GB',   mem:1024},
+];
 const COLS = [
   {key:'g20',  price:20,  cap:700},
   {key:'c20',  price:20,  cap:400},
@@ -323,16 +351,16 @@ const SUBS = [
 // Top open-weight models, LiveBench (table_2026_01_08, Jun 2026), ranked by Global Average.
 // Collapsed to latest version per model line; ◆ tier from LiveBench Agentic-Coding score.
 const MODELS = [
-  {id:'qwen3.6-flash',    name:'Qwen3.6-Flash',        tier:1, rig:'1× RTX 4090',     tps:160, capex:2600,  watts:450,  api:0.21, params:'35B / 3B active',    coding:0.65},
-  {id:'qwen3.6-27b',      name:'Qwen3.6-27B',          tier:2, rig:'1× RTX 5090',     tps:60,  capex:4500,  watts:575,  api:0.52, params:'27B dense',          coding:0.72},
-  {id:'gemma-4-31b',      name:'Gemma 4 31B',          tier:1, rig:'1× RTX 5090',     tps:63,  capex:4500,  watts:575,  api:0.15, params:'31B dense',          coding:0.60},
-  {id:'deepseek-v4-flash',name:'DeepSeek-V4-Flash',    tier:2, rig:'used M3 Ultra 256GB',  tps:30,  capex:6000,  watts:230,  api:0.12, params:'284B / 13B active',  coding:0.69},
-  {id:'minimax-m2.5',     name:'MiniMax-M2.5',         tier:2, rig:'used M3 Ultra 256GB',  tps:38,  capex:6000,  watts:230,  api:0.21, params:'230B / 10B active', coding:0.71},
-  {id:'minimax-m3',       name:'MiniMax-M3',           tier:3, rig:'used M3 Ultra 512GB',  tps:26,  capex:9500,  watts:250,  api:0.37, params:'428B / 23B active',  coding:0.68},
-  {id:'glm-5.2',          name:'GLM-5.2',              tier:3, rig:'used M3 Ultra 512GB',  tps:17,  capex:9500,  watts:250,  api:1.42, params:'744B / 40B active',  coding:0.80},
-  {id:'kimi-k2.7',        name:'Kimi K2.7-Code',       tier:3, rig:'2× used M3 Ultra 512GB',tps:15, capex:19000, watts:500,  api:0.80, params:'1T / 32B active',    coding:0.74},
-  {id:'deepseek-v4-pro',  name:'DeepSeek-V4-Pro',      tier:3, rig:'8× RTX 3090',     tps:8,   capex:13000, watts:2400, api:0.47, params:'1.6T / 49B active',  coding:0.70},
-  {id:'nemotron-3-550b',  name:'Nemotron-3-Ultra 550B',tier:1, rig:'8× RTX 3090',     tps:10,  capex:13000, watts:2400, api:0.63, params:'550B / 55B active',  coding:0.71},
+  {id:'qwen3.6-flash',    name:'Qwen3.6-Flash',        tier:1, mem:22,  rig:'1× RTX 4090',     tps:160, capex:2600,  watts:450,  api:0.21, params:'35B / 3B active',    coding:0.65},
+  {id:'qwen3.6-27b',      name:'Qwen3.6-27B',          tier:2, mem:18,  rig:'1× RTX 5090',     tps:60,  capex:4500,  watts:575,  api:0.52, params:'27B dense',          coding:0.72},
+  {id:'gemma-4-31b',      name:'Gemma 4 31B',          tier:1, mem:20,  rig:'1× RTX 5090',     tps:63,  capex:4500,  watts:575,  api:0.15, params:'31B dense',          coding:0.60},
+  {id:'deepseek-v4-flash',name:'DeepSeek-V4-Flash',    tier:2, mem:165, rig:'used M3 Ultra 256GB',  tps:30,  capex:6000,  watts:230,  api:0.12, params:'284B / 13B active',  coding:0.69},
+  {id:'minimax-m2.5',     name:'MiniMax-M2.5',         tier:2, mem:135, rig:'used M3 Ultra 256GB',  tps:38,  capex:6000,  watts:230,  api:0.21, params:'230B / 10B active', coding:0.71},
+  {id:'minimax-m3',       name:'MiniMax-M3',           tier:3, mem:250, rig:'used M3 Ultra 512GB',  tps:26,  capex:9500,  watts:250,  api:0.37, params:'428B / 23B active',  coding:0.68},
+  {id:'glm-5.2',          name:'GLM-5.2',              tier:3, mem:476, rig:'used M3 Ultra 512GB',  tps:17,  capex:9500,  watts:250,  api:1.42, params:'744B / 40B active',  coding:0.80},
+  {id:'kimi-k2.7',        name:'Kimi K2.7-Code',       tier:3, mem:580, rig:'2× used M3 Ultra 512GB',tps:15, capex:19000, watts:500,  api:0.80, params:'1T / 32B active',    coding:0.74},
+  {id:'deepseek-v4-pro',  name:'DeepSeek-V4-Pro',      tier:3, mem:600, rig:'8× RTX 3090',     tps:8,   capex:13000, watts:2400, api:0.47, params:'1.6T / 49B active',  coding:0.70},
+  {id:'nemotron-3-550b',  name:'Nemotron-3-Ultra 550B',tier:1, mem:275, rig:'8× RTX 3090',     tps:10,  capex:13000, watts:2400, api:0.63, params:'550B / 55B active',  coding:0.71},
 ];
 const TIER = {1:{g:'◆',label:'autocomplete-only'},2:{g:'◆◆',label:'light agentic'},3:{g:'◆◆◆',label:'agentic-ready'}};
 
@@ -370,6 +398,7 @@ const HEADERS={
 };
 const ratioCls=r=>r<0.8?'r-good':r<=1.3?'r-ok':r<=3?'r-warn':'r-terr';
 const cssVar={green:'--green',blue:'--blue',amber:'--amber',orange:'--orange',red:'--red'};
+function fitState(m,dm){ if(dm>=m.mem*1.06) return 'yes'; if(dm>=m.mem) return 'tight'; return 'no'; }
 
 function explain(m, lm, sub, ratio, v, outgrown, u, noSubs, apiMo){
   const C=cssVar[v], cost=fmt$(lm), tl=TIER[m.tier].label;
@@ -409,22 +438,24 @@ function explain(m, lm, sub, ratio, v, outgrown, u, noSubs, apiMo){
   return {C, title, body, math};
 }
 
-let planIdx=4, thrIdx=2, budIdx=5, noSubs=false, RAT=[];
+let planIdx=4, thrIdx=2, budIdx=5, noSubs=false, devIdx=0, RAT=[];
 const usage=()=>usageDollars(PLANS[planIdx],THROTTLES[thrIdx]);
 const fmt$=n=>'$'+Math.round(n).toLocaleString();
 const MONTHHRS=730;
-function writeURL(){ try{ history.replaceState(null,'','?'+new URLSearchParams({p:planIdx,t:thrIdx,b:budIdx,s:noSubs?1:0}).toString()); }catch(e){} }
+function writeURL(){ try{ history.replaceState(null,'','?'+new URLSearchParams({p:planIdx,t:thrIdx,b:budIdx,s:noSubs?1:0,d:devIdx}).toString()); }catch(e){} }
 
 function buildSelects(){
   const p=document.getElementById('plan'), t=document.getElementById('throttle');
-  const b=document.getElementById('budget');
+  const b=document.getElementById('budget'), d=document.getElementById('device');
   PLANS.forEach((x,i)=>{const o=document.createElement('option');o.value=i;o.textContent=x.l;p.appendChild(o);});
   THROTTLES.forEach((x,i)=>{const o=document.createElement('option');o.value=i;o.textContent=x.l;t.appendChild(o);});
   BUDGETS.forEach((x,i)=>{const o=document.createElement('option');o.value=i;o.textContent=x.l;b.appendChild(o);});
-  p.value=planIdx; t.value=thrIdx; b.value=budIdx;
+  DEVICES.forEach((x,i)=>{const o=document.createElement('option');o.value=i;o.textContent=x.l;d.appendChild(o);});
+  p.value=planIdx; t.value=thrIdx; b.value=budIdx; d.value=devIdx;
   p.oninput=e=>{planIdx=+e.target.value;recompute();writeURL();};
   t.oninput=e=>{thrIdx=+e.target.value;recompute();writeURL();};
   b.oninput=e=>{budIdx=+e.target.value;recompute();writeURL();};
+  d.oninput=e=>{devIdx=+e.target.value;recompute();writeURL();};
   document.getElementById('noSubs').oninput=e=>{noSubs=e.target.checked;recompute();writeURL();};
 }
 function buildAssumptions(){
@@ -445,7 +476,7 @@ function buildTable(){
     tr.innerHTML=`
       <td class="model">
         <div class="nm">${m.name}</div>
-        <div class="meta"><span class="tier" title="LiveBench coding ${m.coding} · ${m.params}">${TIER[m.tier].g}</span>${TIER[m.tier].label} · ${m.rig}</div></td>
+        <div class="meta"><span class="tier" title="LiveBench coding ${m.coding} · ${m.params}">${TIER[m.tier].g}</span>${TIER[m.tier].label} · ${m.rig}<span class="fitbadge" id="fit-${i}"></span></div></td>
       <td class="mobile-hide"><span class="edit"><input id="spd-${i}" type="number" min="1" value="${m.tps}"><span class="u">t/s</span></span></td>
       <td class="mobile-hide"><span class="edit"><span class="u">$</span><input id="rig-${i}" type="number" min="0" step="100" value="${m.capex}" style="width:72px"></span></td>
       <td class="advcol"><span class="edit"><input id="watt-${i}" type="number" min="0" step="10" value="${m.watts}" style="width:62px"><span class="u">W</span></span></td>
@@ -462,7 +493,7 @@ function buildTable(){
   });
 }
 function recompute(){
-  const u=usage(), sub=cheapestCovering(u), outgrown=!sub;
+  const u=usage(), sub=cheapestCovering(u), outgrown=!sub, dev=DEVICES[devIdx];
   const isApi=!!PLANS[planIdx].api;
   const apiMode=noSubs||isApi;
   document.getElementById('andI').style.display=isApi?'none':'';
@@ -474,6 +505,7 @@ function recompute(){
   document.getElementById('tnote').innerHTML = apiMode
     ? `ratio column = cost to run ÷ this model’s own cloud API&nbsp; (under 1.0× = local is cheaper) · models &amp; ◆ tiers from LiveBench, Jun 2026`
     : `ratio columns = cost to run ÷ that option&nbsp; (under 1.0× = local is cheaper · “maxed” = your usage tops the plan) · “vs API” = this model’s own cloud API · models &amp; ◆ tiers from LiveBench, Jun 2026`;
+  if(dev.mem!=null){ document.getElementById('tnote').innerHTML += ` · <b style="color:var(--tx-2)">fit</b> = loads at ~Q4 with KV cache in your device's fast memory (a smaller quant or RAM offload can stretch it). Verdict still assumes you buy the listed rig.`; }
   document.getElementById('usageLine').innerHTML =
     `→ that's roughly <b>${fmt$(u)}/mo</b> of usage at coding-model API prices. ` +
     `Here's what running it yourself would cost instead` +
@@ -494,6 +526,13 @@ function recompute(){
     else { ratio=sub?lm/sub.price:0; v=verdict(ratio,m.tier,outgrown); label=(outgrown&&m.tier>=2)?'buy the rig':VLABEL[v]; }
     RAT[i]=explain(m, lm, sub, ratio, v, outgrown, u, apiMode, apiMo);
     document.getElementById('vd-'+i).innerHTML=`<span class="vpill v-${v}" data-i="${i}">${label}</span>`;
+    const fb=document.getElementById('fit-'+i), row=document.getElementById('row-'+i);
+    if(dev.mem==null){ fb.innerHTML=''; row.classList.remove('nofit'); }
+    else{ const fs=fitState(m,dev.mem);
+      if(fs==='yes'){ fb.innerHTML=` · <span class="fit-yes" title="Fits: ~${m.mem}GB needed at Q4, your device has ${dev.mem}GB.">✓ fits</span>`; row.classList.remove('nofit'); }
+      else if(fs==='tight'){ fb.innerHTML=` · <span class="fit-tight" title="Borderline: ~${m.mem}GB needed at Q4 vs ${dev.mem}GB. It loads, but KV cache and context headroom are tight; you may need a smaller quant or shorter context.">⚠ tight</span>`; row.classList.remove('nofit'); }
+      else{ fb.innerHTML=` · <span class="fit-no" title="Won't fit at Q4: ~${m.mem}GB needed vs ${dev.mem}GB. Runnable only at a smaller quant (quality loss) or with slow RAM/disk offload.">✗ needs ~${m.mem}GB</span>`; row.classList.add('nofit'); }
+    }
     document.getElementById('row-'+i).classList.toggle('over', m.capex>BUDGETS[budIdx].v);
   });
 }
@@ -501,7 +540,8 @@ function recompute(){
   if((v=gi('p',PLANS.length-1))!==null)planIdx=v;
   if((v=gi('t',THROTTLES.length-1))!==null)thrIdx=v;
   if((v=gi('b',BUDGETS.length-1))!==null)budIdx=v;
-  if(q.get('s')==='1')noSubs=true; })();
+  if(q.get('s')==='1')noSubs=true;
+  if((v=gi('d',DEVICES.length-1))!==null)devIdx=v; })();
 buildSelects(); buildAssumptions(); buildTable(); recompute();
 
 (function(){
