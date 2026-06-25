@@ -153,6 +153,7 @@
   tbody tr.over:hover{opacity:.6}
   td.model{text-align:left}
   td.model .nm{font-weight:700;font-size:14.5px;letter-spacing:-.01em}
+  td.model .nm .lockbadge{margin-left:8px;font-size:10px;font-weight:600;color:var(--tx-3);letter-spacing:.02em;white-space:nowrap;cursor:help;vertical-align:1.5px}
   td.model .meta{font-size:11.5px;color:var(--tx-3);margin-top:3px}
   td.model .meta .tier{color:var(--tx);letter-spacing:1px;margin-right:5px;cursor:help}
 
@@ -331,6 +332,8 @@ const I18N = {
     devices:['any device (show all models)','Mac mini · M2 · 8GB (used)','MacBook Air · M4 · 16GB','MacBook Air · M4 · 24GB','MacBook Pro · M4 · 32GB','MacBook Pro · M4 Max · 36GB','MacBook Pro · M4 Pro · 48GB','MacBook Pro · M4 Max · 64GB','MacBook Pro · M4 Max · 128GB','Mac Studio · M3 Ultra · 96GB','Mac Studio · M4 Max · 128GB','Mac Studio · M3 Ultra · 256GB (used)','Mac Studio · M3 Ultra · 512GB (used)','1× RTX 4090 · 24GB','1× RTX 5090 · 32GB','2× RTX 4090 · 48GB','2× RTX 5090 · 64GB','8× RTX 3090 · 192GB VRAM','2× M3 Ultra 512GB cluster · 1,024GB'],
     tierLabels:{1:'autocomplete-only',2:'light agentic',3:'agentic-ready'},
     tierTip:(coding,params)=>`LiveBench coding ${coding} · ${params}`,
+    lockBadge:'stays local',
+    lockTip:'Runs entirely on your own hardware. Your code and prompts never leave the machine.',
     vlabel:{green:'buy the rig',blue:'toss-up',amber:'only if you must',orange:'overpriced',red:'just subscribe'},
     vlabelApi:{green:'buy the rig',blue:'toss-up',amber:'only if you must',orange:'overpriced',red:'just use the API'},
     vlabelOwn:{green:'run it locally',blue:'run it locally',amber:'free to run',orange:'free to run',red:'free to run'},
@@ -417,6 +420,8 @@ const I18N = {
     devices:['herhangi bir cihaz (tüm modelleri göster)','Mac mini · M2 · 8GB (ikinci el)','MacBook Air · M4 · 16GB','MacBook Air · M4 · 24GB','MacBook Pro · M4 · 32GB','MacBook Pro · M4 Max · 36GB','MacBook Pro · M4 Pro · 48GB','MacBook Pro · M4 Max · 64GB','MacBook Pro · M4 Max · 128GB','Mac Studio · M3 Ultra · 96GB','Mac Studio · M4 Max · 128GB','Mac Studio · M3 Ultra · 256GB (ikinci el)','Mac Studio · M3 Ultra · 512GB (ikinci el)','1× RTX 4090 · 24GB','1× RTX 5090 · 32GB','2× RTX 4090 · 48GB','2× RTX 5090 · 64GB','8× RTX 3090 · 192GB VRAM','2× M3 Ultra 512GB küme · 1,024GB'],
     tierLabels:{1:'yalnızca otomatik tamamlama',2:'hafif ajantik',3:'ajan döngüsüne hazır'},
     tierTip:(coding,params)=>`LiveBench kodlama ${coding} · ${params}`,
+    lockBadge:'yerelde kalır',
+    lockTip:'Tamamen kendi donanımınızda çalışır. Kodunuz ve istemleriniz makineden hiç çıkmaz.',
     vlabel:{green:"rig'i al",blue:'başa baş',amber:'mecbursan',orange:'fazla pahalı',red:'abone ol yeter'},
     vlabelApi:{green:"rig'i al",blue:'başa baş',amber:'mecbursan',orange:'fazla pahalı',red:"API'yi kullan yeter"},
     vlabelOwn:{green:'yerelde çalıştır',blue:'yerelde çalıştır',amber:'çalıştırması bedava',orange:'çalıştırması bedava',red:'çalıştırması bedava'},
@@ -685,7 +690,7 @@ function buildTable(){
     const tr=document.createElement('tr'); tr.id='row-'+i;
     tr.innerHTML=`
       <td class="model">
-        <div class="nm">${m.name}</div>
+        <div class="nm">${m.name}<span class="lockbadge" title="${T().lockTip}">🔒 ${T().lockBadge}</span></div>
         <div class="meta"><span class="tier" title="${T().tierTip(m.coding,m.params)}">${TIER[m.tier].g}</span>${tierLabel(m.tier)} · ${m.rig}<span class="fitbadge" id="fit-${i}"></span></div></td>
       <td class="mobile-hide"><span class="edit"><input id="spd-${i}" type="number" min="1" value="${m.tps}"><span class="u">t/s</span></span></td>
       <td class="mobile-hide"><span class="edit"><span class="u">$</span><input id="rig-${i}" type="number" min="0" step="100" value="${m.capex}" style="width:72px"></span></td>
