@@ -79,8 +79,10 @@
 
   /* hero */
   .hero{padding:48px 0 6px}
-  h1.head{font-size:clamp(30px,4.4vw,50px);line-height:1.07;font-weight:800;letter-spacing:-.035em;margin:0 0 24px;max-width:720px}
+  h1.head{font-size:clamp(30px,4.4vw,50px);line-height:1.07;font-weight:800;letter-spacing:-.035em;margin:0 0 18px;max-width:720px}
   h1.head .muted{color:var(--tx-3)}
+  .herosub{margin:0 0 26px;max-width:660px;font-size:15px;line-height:1.55;color:var(--tx-2)}
+  .herosub .hl{color:var(--tx);font-weight:600}
   .rainbow{display:inline-block;cursor:pointer;user-select:none;background:linear-gradient(90deg,#ff6b6b,#fbbf24,#4ade80,#60a5fa,#a78bfa,#f472b6,#ff6b6b);background-size:200% auto;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent;animation:rainbow 4s linear infinite;transition:transform .18s ease}
   .rainbow:hover{transform:scale(1.1)}
   .rainbow:active{transform:scale(1.04)}
@@ -225,6 +227,7 @@
 
     <section class="hero">
       <h1 class="head" data-i18n-html="heroTitle">should you <span class="muted">buy a</span> <span class="rainbow">rig</span> instead of paying for an API or subscription?</h1>
+      <p class="herosub" data-i18n-html="heroSub">Mostly this is a cost question, and the API often wins. But not only: running local keeps your code and prompts <span class="hl">on your own machine</span>, never in a provider's API logs.</p>
       <div class="controls">
         <div class="row"><span data-i18n="ctlPay">Today I pay</span><span class="chip"><select id="plan"></select><span class="car">▾</span></span><span id="andI" data-i18n="ctlAndI">and I</span><span class="chip" id="thrChip"><select id="throttle"></select><span class="car">▾</span></span><span data-i18n="ctlSpend">and I can spend</span><span class="chip"><select id="budget"></select><span class="car">▾</span></span><span data-i18n="ctlForRig">for a rig</span></div>
       </div>
@@ -308,6 +311,7 @@ const I18N = {
     metaDesc:'A calibrated calculator for deciding whether running a local AI rig beats paying for an API or a ChatGPT/Claude subscription.',
     builtBy:'built by',
     heroTitle:'should you <span class="muted">buy a</span> <span class="rainbow">rig</span> instead of paying for an API or subscription?',
+    heroSub:`Mostly this is a cost question, and the API often wins. But not only: running local keeps your code and prompts <span class="hl">on your own machine</span>, never in a provider's API logs.`,
     ctlPay:'Today I pay', ctlAndI:'and I', ctlSpend:'and I can spend', ctlForRig:'for a rig',
     devicePick:'Can my device run these?',
     apiToggle:'I use the API, not subscriptions',
@@ -393,6 +397,7 @@ const I18N = {
     metaDesc:'Yerel bir yapay zeka rig\'i çalıştırmanın API ya da ChatGPT/Claude aboneliği ödemekten daha mı iyi olduğuna karar vermek için kalibre edilmiş bir hesaplayıcı.',
     builtBy:'yapan',
     heroTitle:'bir API ya da aboneliğe ödeme yapmak yerine <span class="muted">kendine bir</span> <span class="rainbow">rig</span> mi almalısın?',
+    heroSub:`Bu çoğunlukla bir maliyet sorusu ve genelde API kazanır. Ama tek mesele o değil: yerel çalıştırmak kodunuzu ve istemlerinizi bir sağlayıcının API günlüklerinde değil <span class="hl">kendi makinenizde</span> tutar.`,
     ctlPay:'Şu anki planım', ctlAndI:'ve', ctlSpend:'ve bir rig\'e', ctlForRig:'ayırabilirim',
     devicePick:'Cihazım bunları çalıştırabilir mi?',
     apiToggle:'Abonelik değil, API kullanıyorum',
