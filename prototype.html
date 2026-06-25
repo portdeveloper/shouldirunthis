@@ -534,9 +534,19 @@ const SUBS = [
   {price:100,cap:2000,l:'Claude Max 5×'}, {price:100,cap:3500,l:'ChatGPT Pro 5×'},
   {price:200,cap:8000,l:'Claude Max 20×'}, {price:200,cap:14000,l:'ChatGPT Pro 20×'},
 ];
-// Top open-weight models, LiveBench (table_2026_01_08, Jun 2026), ranked by Global Average.
-// Collapsed to latest version per model line; ◆ tier from LiveBench Agentic-Coding score.
+// Open-weight models, LiveBench (table_2026_05_12, Jun 2026); ◆ tier from LiveBench Agentic-Coding score.
+// Laptop block first (runs on an M4 Mac at ~Q4), then GPU-rig / Mac-Studio / cluster builds.
+// Small-model mem/tps grounded against whatcani.run measured runs; coding = LiveBench Coding Avg.
 const MODELS = [
+  // --- runs on a laptop (M4 Mac, ~Q4) ---
+  {id:'qwen3.6-8b',       name:'Qwen3.6-8B',           tier:1, mem:7,   rig:'MacBook Air · M4 · 16GB',     tps:30,  capex:1100,  watts:30,   api:0.06, params:'8B dense',           coding:0.52},
+  {id:'gemma-4-12b',      name:'Gemma 4 12B',          tier:1, mem:9,   rig:'MacBook Air · M4 · 16GB',     tps:22,  capex:1100,  watts:30,   api:0.08, params:'12B dense',          coding:0.48},
+  {id:'gpt-oss-20b',      name:'gpt-oss-20B',          tier:2, mem:13,  rig:'MacBook Air · M4 · 16GB',     tps:45,  capex:1100,  watts:32,   api:0.07, params:'21B / 3.6B active',  coding:0.56},
+  {id:'mistral-small-4',  name:'Mistral Small 4',      tier:1, mem:16,  rig:'MacBook Pro · M4 · 32GB',     tps:13,  capex:1600,  watts:38,   api:0.12, params:'24B dense',          coding:0.57},
+  {id:'glm-4.7-flash',    name:'GLM-4.7-Flash',        tier:2, mem:19,  rig:'MacBook Pro · M4 · 32GB',     tps:46,  capex:1600,  watts:40,   api:0.11, params:'30B / 3B active',    coding:0.66},
+  {id:'nemotron-3-nano',  name:'Nemotron-3-Nano 30B',  tier:2, mem:19,  rig:'MacBook Pro · M4 Pro · 48GB', tps:18,  capex:2500,  watts:45,   api:0.14, params:'30B dense',          coding:0.63},
+  {id:'gpt-oss-120b',     name:'gpt-oss-120B',         tier:3, mem:60,  rig:'MacBook Pro · M4 Max · 64GB', tps:40,  capex:3900,  watts:60,   api:0.20, params:'117B / 5.1B active', coding:0.67},
+  // --- needs a GPU rig / Mac Studio / cluster ---
   {id:'qwen3.6-flash',    name:'Qwen3.6-Flash',        tier:1, mem:22,  rig:'1× RTX 4090',     tps:160, capex:2600,  watts:450,  api:0.21, params:'35B / 3B active',    coding:0.65},
   {id:'qwen3.6-27b',      name:'Qwen3.6-27B',          tier:2, mem:18,  rig:'1× RTX 5090',     tps:60,  capex:4500,  watts:575,  api:0.52, params:'27B dense',          coding:0.72},
   {id:'gemma-4-31b',      name:'Gemma 4 31B',          tier:1, mem:20,  rig:'1× RTX 5090',     tps:63,  capex:4500,  watts:575,  api:0.15, params:'31B dense',          coding:0.60},

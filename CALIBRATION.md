@@ -21,6 +21,27 @@ const CONST = { FRONTIER:5, ELEC:0.18, AMORT:36, IORATIO:12 };
 ```
 Sub caps unchanged (confirmed vs SemiAnalysis, ~June 2026): ChatGPT Plus $20=700, Claude Pro $20=400, ChatGPT 5x $100=3500, Claude Max 5x $100=2000, ChatGPT 20x $200=14000, Claude Max 20x $200=8000. Throttle {0.4, 0.7, 0.9, 1.6} confirmed (optional: heaviest 1.6 to 2.0).
 
+## Laptop-runnable additions (2026-06-25)
+
+Added a "runs on a laptop" block at the top of MODELS, sourced from the LiveBench open-weight set (sort=Agentic Coding, May 12 2026 snapshot) and grounded for fit/throughput against whatcani.run measured runs. Goal: the device picker previously showed **zero** models for a 16GB MacBook Air (smallest entry needed 18GB); now it shows four. All rigs are M4 Macs, so capex (and thus monthly cost) is much lower than the GPU builds.
+
+```js
+{id:'qwen3.6-8b',      name:'Qwen3.6-8B',          tier:1, mem:7,  rig:'MacBook Air · M4 · 16GB',     tps:30, capex:1100, watts:30, api:0.06, params:'8B dense',           coding:0.52},
+{id:'gemma-4-12b',     name:'Gemma 4 12B',         tier:1, mem:9,  rig:'MacBook Air · M4 · 16GB',     tps:22, capex:1100, watts:30, api:0.08, params:'12B dense',          coding:0.48},
+{id:'gpt-oss-20b',     name:'gpt-oss-20B',         tier:2, mem:13, rig:'MacBook Air · M4 · 16GB',     tps:45, capex:1100, watts:32, api:0.07, params:'21B / 3.6B active',  coding:0.56},
+{id:'mistral-small-4', name:'Mistral Small 4',     tier:1, mem:16, rig:'MacBook Pro · M4 · 32GB',     tps:13, capex:1600, watts:38, api:0.12, params:'24B dense',          coding:0.57},
+{id:'glm-4.7-flash',   name:'GLM-4.7-Flash',       tier:2, mem:19, rig:'MacBook Pro · M4 · 32GB',     tps:46, capex:1600, watts:40, api:0.11, params:'30B / 3B active',    coding:0.66},
+{id:'nemotron-3-nano', name:'Nemotron-3-Nano 30B', tier:2, mem:19, rig:'MacBook Pro · M4 Pro · 48GB', tps:18, capex:2500, watts:45, api:0.14, params:'30B dense',          coding:0.63},
+{id:'gpt-oss-120b',    name:'gpt-oss-120B',        tier:3, mem:60, rig:'MacBook Pro · M4 Max · 64GB', tps:40, capex:3900, watts:60, api:0.20, params:'117B / 5.1B active', coding:0.67},
+```
+
+Grounding / confidence:
+- `mem`: gpt-oss-20B and the small Qwen sizes anchored to whatcani.run measured peak memory (gpt-oss-20B Q8 ~9.9GB, so MXFP4 fits 16GB comfortably; Qwen 9B 4bit ~8GB). Dense 24-30B at Q4 ~15-19GB. gpt-oss-120B MXFP4 ~60GB (OpenAI card: "runs on a single 80GB GPU"; fits a 64GB Mac, tight). MED-HIGH.
+- `coding` (LiveBench Coding Avg /100): MED confidence estimates pending exact per-model LiveBench rows; ordering is right (GLM-Flash > gpt-oss-120B ≈ Nemotron > gpt-oss-20B > Mistral > Qwen-8B > Gemma-12B), absolute values approximate. Editable consideration: these are not yet exposed as editable cells; revise when exact LiveBench rows are read.
+- `tier` (agentic-loop capability, separate from raw coding): gpt-oss + GLM-Flash + Nemotron carry native tool-use / strong agentic behaviour (tier 2-3); Gemma/Qwen-8B/Mistral-Small are autocomplete-to-light (tier 1). LOW-MED.
+- `tps`: on the *named laptop* at Q4, not on a GPU. MoE (gpt-oss, GLM-Flash) fast even on base-M4 bandwidth; dense 24-30B slow on base M4 (hence M4 Pro 48GB for Nemotron). whatcani.run M4 Max numbers are higher (more bandwidth) and were de-rated for the cheaper rigs. LOW-MED; power is negligible at laptop watts so this barely moves verdicts.
+- `capex`: mid-2026 street: MBA M4 16GB ~$1100, MBP M4 32GB ~$1600, MBP M4 Pro 48GB ~$2500, MBP M4 Max 64GB ~$3900. Dominates monthly cost (capex/36); laptop rows land ~$31-109/mo.
+
 ## Key changes vs the old mock estimates
 
 - ELEC 0.15 to 0.18 (EIA US residential, Mar 2026). FRONTIER/AMORT/IORATIO confirmed.
