@@ -115,6 +115,8 @@
   .assump-grid .edit input{width:58px;font-size:13px}
   .assump-note{margin:12px 0 0;line-height:1.55}
   .tabletools{display:flex;align-items:center;justify-content:space-between;gap:12px 18px;margin:16px 0 0;flex-wrap:wrap}
+  .tt-left{display:flex;align-items:center;gap:12px 18px;flex-wrap:wrap}
+  .ownedtag{margin-left:6px;font-size:10.5px;font-weight:600;color:var(--tx-3);text-transform:uppercase;letter-spacing:.04em}
   .device-pick{display:flex;align-items:center;gap:10px;font-size:13px;color:var(--tx-2);flex-wrap:wrap}
   .device-pick>span{white-space:nowrap}
   .device-pick .chip select{font-size:13px;font-weight:650;padding:6px 30px 6px 12px;border-radius:9px;max-width:300px}
@@ -230,7 +232,10 @@
     </section>
 
     <div class="tabletools">
-      <label class="device-pick"><span data-i18n="devicePick">Can my device run these?</span><span class="chip"><select id="device" aria-label="Your device"></select><span class="car">▾</span></span></label>
+      <div class="tt-left">
+        <label class="device-pick"><span data-i18n="devicePick">Can my device run these?</span><span class="chip"><select id="device" aria-label="Your device"></select><span class="car">▾</span></span></label>
+        <label class="tgl" id="ownDevLabel"><span data-i18n="ownToggle">I already own it</span><input type="checkbox" id="ownDev"><span class="switch" aria-hidden="true"></span></label>
+      </div>
       <label class="tgl" id="noSubsLabel"><span data-i18n="apiToggle">I use the API, not subscriptions</span><input type="checkbox" id="noSubs"><span class="switch" aria-hidden="true"></span></label>
     </div>
     <div class="api-hint" id="apiHint" hidden></div>
@@ -324,6 +329,12 @@ const I18N = {
     tierTip:(coding,params)=>`LiveBench coding ${coding} · ${params}`,
     vlabel:{green:'buy the rig',blue:'toss-up',amber:'only if you must',orange:'overpriced',red:'just subscribe'},
     vlabelApi:{green:'buy the rig',blue:'toss-up',amber:'only if you must',orange:'overpriced',red:'just use the API'},
+    vlabelOwn:{green:'run it locally',blue:'run it locally',amber:'free to run',orange:'free to run',red:'free to run'},
+    ownToggle:'I already own it',
+    ownTag:'power only',
+    ownTitle:(dev)=>`Run it on the ${dev} you own`,
+    explainOwn:(m,pw,api,tl,weak)=>`You already own this device, so the hardware is a sunk cost. Running <b>${m.name}</b> at this usage costs about <b>${pw}/mo</b> in electricity, well under its ~${api}/mo cloud API. ${weak?`It's ${tl}, so lean on it as a near-free local helper for completion and small edits, not a frontier replacement.`:`It's ${tl} and basically free to run on hardware you've already paid for.`}`,
+    ownMath:(pw)=>`power only: ~${pw}/mo (rig already owned, $0 capex)`,
     maxed:'maxed',
     cantKeep:"can't keep up",
     cantKeepTip:hrs=>`Needs ~${hrs} generation-hours/mo, but a month only has ~730. This rig physically can't produce your usage at this volume.`,
@@ -332,6 +343,7 @@ const I18N = {
     apiHint:`<b>API mode:</b> each row is compared against <b>that model’s own</b> cloud API, which for open weights is very cheap, so a rig rarely wins on cost here. To see where buying pays off, switch the plan above to a subscription you’d replace, or raise the usage.`,
     tnoteSub:`ratio columns = cost to run ÷ that option&nbsp; (under 1.0× = local is cheaper · “maxed” = your usage tops the plan) · “vs API” = this model’s own cloud API · models &amp; ◆ tiers from LiveBench, Jun 2026`,
     tnoteFit:` · <b style="color:var(--tx-2)">fit</b> = loads at ~Q4 with KV cache in your device's fast memory (a smaller quant or RAM offload can stretch it). Verdict still assumes you buy the listed rig.`,
+    tnoteOwn:` · <b style="color:var(--tx-2)">fit</b> = loads at ~Q4 with KV cache in your device's fast memory. Rows that fit show <b>power-only</b> cost and a local verdict, since the hardware is already yours.`,
     fitYes:(mem,dev)=>` · <span class="fit-yes" title="Fits: ~${mem}GB needed at Q4, your device has ${dev}GB.">✓ fits</span>`,
     fitTight:(mem,dev)=>` · <span class="fit-tight" title="Borderline: ~${mem}GB needed at Q4 vs ${dev}GB. It loads, but KV cache and context headroom are tight; you may need a smaller quant or shorter context.">⚠ tight</span>`,
     fitNo:(mem,dev)=>` · <span class="fit-no" title="Won't fit at Q4: ~${mem}GB needed vs ${dev}GB. Runnable only at a smaller quant (quality loss) or with slow RAM/disk offload.">✗ needs ~${mem}GB</span>`,
@@ -402,6 +414,12 @@ const I18N = {
     tierTip:(coding,params)=>`LiveBench kodlama ${coding} · ${params}`,
     vlabel:{green:"rig'i al",blue:'başa baş',amber:'mecbursan',orange:'fazla pahalı',red:'abone ol yeter'},
     vlabelApi:{green:"rig'i al",blue:'başa baş',amber:'mecbursan',orange:'fazla pahalı',red:"API'yi kullan yeter"},
+    vlabelOwn:{green:'yerelde çalıştır',blue:'yerelde çalıştır',amber:'çalıştırması bedava',orange:'çalıştırması bedava',red:'çalıştırması bedava'},
+    ownToggle:'Zaten bende var',
+    ownTag:'yalnızca güç',
+    ownTitle:(dev)=>`Sahip olduğunuz ${dev} üzerinde çalıştırın`,
+    explainOwn:(m,pw,api,tl,weak)=>`Bu cihaz zaten sizde, yani donanım batık maliyet. <b>${m.name}</b>'i bu kullanımda çalıştırmak ayda yaklaşık <b>${pw}</b> elektrik demek; ~${api}/ay bulut API'sinin epey altında. ${weak?`${tl}, bu yüzden onu tamamlama ve küçük düzenlemeler için neredeyse bedava bir yerel yardımcı olarak görün, amiral gemisi yerine değil.`:`${tl} ve zaten parasını ödediğiniz donanımda çalıştırması neredeyse bedava.`}`,
+    ownMath:(pw)=>`yalnızca güç: ~${pw}/ay (rig zaten sizde, $0 donanım)`,
     maxed:'aşıldı',
     cantKeep:'yetişemiyor',
     cantKeepTip:hrs=>`Ayda ~${hrs} üretim-saati gerekir ama bir ayda yalnızca ~730 saat var. Bu rig, kullanımınızı bu hacimde fiziksel olarak üretemez.`,
@@ -410,6 +428,7 @@ const I18N = {
     apiHint:`<b>API modu:</b> her satır, <b>o modelin kendi</b> bulut API'siyle karşılaştırılır; açık ağırlıklarda bu çok ucuz olduğundan bir rig burada maliyette nadiren kazanır. Satın almanın ne zaman kazandığını görmek için yukarıdaki planı yerine koyacağınız bir aboneliğe çevirin ya da kullanımı artırın.`,
     tnoteSub:`oran sütunları = çalıştırma maliyeti ÷ o seçenek&nbsp; (1.0× altı = yerel daha ucuz · “aşıldı” = kullanımınız planı aşıyor) · “API'ye karşı” = bu modelin kendi bulut API'si · modeller &amp; ◆ seviyeleri LiveBench, Haz 2026`,
     tnoteFit:` · <b style="color:var(--tx-2)">uyum</b> = cihazınızın hızlı belleğinde ~Q4'te KV önbelleğiyle yüklenir (daha küçük bir kuantizasyon veya RAM'e taşıma bunu esnetebilir). Karar yine de listelenen rig'i aldığınızı varsayar.`,
+    tnoteOwn:` · <b style="color:var(--tx-2)">uyum</b> = cihazınızın hızlı belleğinde ~Q4'te KV önbelleğiyle yüklenir. Uyan satırlar, donanım zaten sizde olduğu için <b>yalnızca güç</b> maliyetini ve yerel bir kararı gösterir.`,
     fitYes:(mem,dev)=>` · <span class="fit-yes" title="Uyar: Q4'te ~${mem}GB gerekir, cihazınızda ${dev}GB var.">✓ uyar</span>`,
     fitTight:(mem,dev)=>` · <span class="fit-tight" title="Sınırda: Q4'te ~${mem}GB'a karşı ${dev}GB. Yüklenir ama KV önbelleği ve bağlam payı dardır; daha küçük bir kuantizasyon ya da daha kısa bağlam gerekebilir.">⚠ sınırda</span>`,
     fitNo:(mem,dev)=>` · <span class="fit-no" title="Q4'te sığmaz: ~${mem}GB'a karşı ${dev}GB gerekir. Yalnızca daha küçük kuantizasyonda (kalite kaybı) ya da yavaş RAM/disk taşımayla çalışır.">✗ ~${mem}GB gerekir</span>`,
@@ -570,10 +589,10 @@ const TIER = {1:{g:'◆',label:'autocomplete-only'},2:{g:'◆◆',label:'light a
 
 /* ---------- compute ---------- */
 function usageDollars(plan, thr){ if(plan.api) return plan.usage; return plan.none ? 30 : Math.max(20, plan.cap*thr.f); }
-function localMonthly(m){
+function localMonthly(m, ownsIt){
   const tokensMo=(usage()/CONST.FRONTIER)*1e6, outTok=tokensMo/(1+CONST.IORATIO);
   const genHrs=outTok/m.tps/3600, power=(m.watts/1000)*genHrs*CONST.ELEC;
-  return power + m.capex/CONST.AMORT;
+  return power + (ownsIt ? 0 : m.capex/CONST.AMORT); // owned rig = sunk cost, power only
 }
 function cheapestCovering(u){ const c=SUBS.filter(s=>s.cap>=u).sort((a,b)=>a.price-b.price||a.cap-b.cap); return c.length?c[0]:null; }
 function verdict(ratio, tier, outgrown){
@@ -610,11 +629,12 @@ function explain(m, lm, sub, ratio, v, outgrown, u, noSubs, apiMo){
   return {C, title, body, math};
 }
 
-let planIdx=4, thrIdx=2, budIdx=5, noSubs=false, devIdx=0, RAT=[];
+let planIdx=4, thrIdx=2, budIdx=5, noSubs=false, devIdx=0, ownDevice=false, RAT=[];
 const usage=()=>usageDollars(PLANS[planIdx],THROTTLES[thrIdx]);
 const fmt$=n=>'$'+Math.round(n).toLocaleString();
+const fmtPwr=n=>n<1?'$'+n.toFixed(2):fmt$(n); // power-only costs can be sub-dollar
 const MONTHHRS=730;
-function writeURL(){ try{ history.replaceState(null,'','?'+new URLSearchParams({p:planIdx,t:thrIdx,b:budIdx,s:noSubs?1:0,d:devIdx,l:LANG}).toString()); }catch(e){} }
+function writeURL(){ try{ history.replaceState(null,'','?'+new URLSearchParams({p:planIdx,t:thrIdx,b:budIdx,s:noSubs?1:0,d:devIdx,o:ownDevice?1:0,l:LANG}).toString()); }catch(e){} }
 
 function wireSelects(){
   const p=document.getElementById('plan'), t=document.getElementById('throttle');
@@ -624,6 +644,7 @@ function wireSelects(){
   b.oninput=e=>{budIdx=+e.target.value;recompute();writeURL();};
   d.oninput=e=>{devIdx=+e.target.value;recompute();writeURL();};
   document.getElementById('noSubs').oninput=e=>{noSubs=e.target.checked;recompute();writeURL();};
+  document.getElementById('ownDev').oninput=e=>{ownDevice=e.target.checked;recompute();writeURL();};
   const ls=document.getElementById('lang');
   if(ls){
     if(!ls.options.length){ [['en','English'],['tr','Türkçe']].forEach(([v,txt])=>{const o=document.createElement('option');o.value=v;o.textContent=txt;ls.appendChild(o);}); }
@@ -685,15 +706,19 @@ function recompute(){
   document.getElementById('noSubs').checked=apiMode;
   document.getElementById('noSubs').disabled=isApi;
   document.getElementById('noSubsLabel').classList.toggle('locked', isApi);
+  const specific=dev.mem!=null, owns=ownDevice&&specific;
+  const od=document.getElementById('ownDev'); od.disabled=!specific; od.checked=owns;
+  document.getElementById('ownDevLabel').classList.toggle('locked', !specific);
   document.getElementById('tbl').classList.toggle('hide-subs', apiMode);
   document.getElementById('tnote').innerHTML = apiMode ? T().tnoteApi : T().tnoteSub;
   const hint=document.getElementById('apiHint'); hint.innerHTML = apiMode ? T().apiHint : ''; hint.hidden = !apiMode;
-  if(dev.mem!=null){ document.getElementById('tnote').innerHTML += T().tnoteFit; }
+  if(dev.mem!=null){ document.getElementById('tnote').innerHTML += owns ? T().tnoteOwn : T().tnoteFit; }
   document.getElementById('usageLine').innerHTML = T().usageLine(fmt$(u), !!PLANS[planIdx].none);
   MODELS.forEach((m,i)=>{
-    const lm=localMonthly(m);
+    const fitsOwned = owns && fitState(m,dev.mem)!=='no'; // own the rig + it fits => hardware is sunk, power only
+    const lm=localMonthly(m, fitsOwned);
     const genHrs=((u/CONST.FRONTIER)*1e6)/(1+CONST.IORATIO)/m.tps/3600, cantKeepUp=genHrs>MONTHHRS;
-    document.getElementById('loc-'+i).innerHTML=`<span class="val">~${fmt$(lm)}</span>`+(cantKeepUp?`<span class="cantkeep" title="${T().cantKeepTip(Math.round(genHrs))}">${T().cantKeep}</span>`:'');
+    document.getElementById('loc-'+i).innerHTML=`<span class="val">~${fitsOwned?fmtPwr(lm):fmt$(lm)}</span>`+(fitsOwned?`<span class="ownedtag">${T().ownTag}</span>`:'')+(cantKeepUp?`<span class="cantkeep" title="${T().cantKeepTip(Math.round(genHrs))}">${T().cantKeep}</span>`:'');
     const apiMo=(u/CONST.FRONTIER)*m.api, ra=lm/apiMo;
     document.getElementById('api-'+i).innerHTML=`<span class="val ${ratioCls(ra)}">${ra.toFixed(ra<10?1:0)}</span><span class="unit">×</span>`;
     COLS.forEach(col=>{
@@ -704,7 +729,13 @@ function recompute(){
     let ratio, v, label;
     if(apiMode){ ratio=ra; v=verdict(ratio,m.tier,false); label=T().vlabelApi[v]; }
     else { ratio=sub?lm/sub.price:0; v=verdict(ratio,m.tier,outgrown); label=(outgrown&&m.tier>=2)?T().vlabel.green:T().vlabel[v]; }
-    RAT[i]=explain(m, lm, sub, ratio, v, outgrown, u, apiMode, apiMo);
+    if(fitsOwned){
+      label=T().vlabelOwn[v];
+      const tl=tierLabel(m.tier);
+      RAT[i]={C:cssVar[v], title:cap(T().ownTitle(dev.l)), body:T().explainOwn(m,fmtPwr(lm),fmt$(apiMo),tl,m.tier<2), math:T().ownMath(fmtPwr(lm))};
+    } else {
+      RAT[i]=explain(m, lm, sub, ratio, v, outgrown, u, apiMode, apiMo);
+    }
     document.getElementById('vd-'+i).innerHTML=`<span class="vpill v-${v}" data-i="${i}">${label}</span>`;
     const fb=document.getElementById('fit-'+i), row=document.getElementById('row-'+i);
     if(dev.mem==null){ fb.innerHTML=''; row.classList.remove('nofit'); }
@@ -721,6 +752,7 @@ function recompute(){
   if((v=gi('t',THROTTLES.length-1))!==null)thrIdx=v;
   if((v=gi('b',BUDGETS.length-1))!==null)budIdx=v;
   if(q.get('s')==='1')noSubs=true;
+  if(q.get('o')==='1')ownDevice=true;
   if((v=gi('d',DEVICES.length-1))!==null)devIdx=v;
   const lp=q.get('l');
   if(lp==='tr'||lp==='en'){ LANG=lp; }
