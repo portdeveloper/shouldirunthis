@@ -42,6 +42,14 @@ Grounding / confidence:
 - `tps`: on the *named laptop* at Q4, not on a GPU. MoE (gpt-oss, GLM-Flash) fast even on base-M4 bandwidth; dense 24-30B slow on base M4 (hence M4 Pro 48GB for Nemotron). whatcani.run M4 Max numbers are higher (more bandwidth) and were de-rated for the cheaper rigs. LOW-MED; power is negligible at laptop watts so this barely moves verdicts.
 - `capex`: mid-2026 street: MBA M4 16GB ~$1100, MBP M4 32GB ~$1600, MBP M4 Pro 48GB ~$2500, MBP M4 Max 64GB ~$3900. Dominates monthly cost (capex/36); laptop rows land ~$31-109/mo.
 
+### Bottom rung (2026-06-25, follow-up)
+
+Extended the cheapest end so the "can the cheapest possible box do anything?" question has an answer. Added one 4B-class anchor plus a new sub-16GB device tier (they only make sense together; a 4B model with no <16GB device in the picker is just a weaker duplicate of the 8B):
+
+- Model: `{id:'qwen3.6-4b', name:'Qwen3.6-4B', tier:1, mem:5, rig:'Mac mini · M2 · 8GB (used)', tps:30, capex:450, watts:22, api:0.04, params:'4B dense', coding:0.40}`. mem from whatcani.run (Qwen3.5-4B 4bit ~4.9GB). tier 1 / autocomplete-only is the honest verdict at 4B. capex = used M2 mini 8GB (~$450 mid-2026).
+- Device: `Mac mini · M2 · 8GB (used)` (mem 8) inserted at DEVICES index 1 (after "any device"). NOTE: this shifts every later device index by +1, so pre-existing shared `?d=` URLs point one device off; acceptable this early post-launch. DEVICES / I18N.en.devices / I18N.tr.devices must stay the same length and order (labels come from I18N, mem from DEVICES, indexed together).
+- On the 8GB mini only the 4B (yes) and 8B (yes, optimistic at small context) fit; everything 12B+ reads "no". Deliberately did NOT add 14B/27B/32B mid-variants: the 8B and 27B rows already bracket them and they change no verdict.
+
 ## Key changes vs the old mock estimates
 
 - ELEC 0.15 to 0.18 (EIA US residential, Mar 2026). FRONTIER/AMORT/IORATIO confirmed.
