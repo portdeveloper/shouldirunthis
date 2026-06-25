@@ -104,6 +104,9 @@
   .sec-head h2{font-size:19px;font-weight:700;letter-spacing:-.02em;margin:0}
   .note{font-size:12.5px;color:var(--tx-3)}
   .tablenote{margin:13px 2px 0;line-height:1.55}
+  .api-hint{margin:14px 0 0;padding:10px 13px;border:1px solid var(--blue);background:var(--blue-bg);border-radius:9px;font-size:13px;line-height:1.5;color:var(--tx-2)}
+  .api-hint[hidden]{display:none}
+  .api-hint b{color:var(--tx)}
   .assumptions{margin-top:20px;border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:13px 0 14px}
   .assump-head{display:flex;align-items:baseline;justify-content:space-between;gap:16px;margin-bottom:10px;font-size:12px;color:var(--tx-3)}
   .assump-head b{color:var(--tx-2);font-size:11px;text-transform:uppercase;letter-spacing:.05em}
@@ -230,6 +233,7 @@
       <label class="device-pick"><span data-i18n="devicePick">Can my device run these?</span><span class="chip"><select id="device" aria-label="Your device"></select><span class="car">▾</span></span></label>
       <label class="tgl" id="noSubsLabel"><span data-i18n="apiToggle">I use the API, not subscriptions</span><input type="checkbox" id="noSubs"><span class="switch" aria-hidden="true"></span></label>
     </div>
+    <div class="api-hint" id="apiHint" hidden></div>
     <div class="table-wrap">
       <table id="tbl">
         <thead>
@@ -325,6 +329,7 @@ const I18N = {
     cantKeepTip:hrs=>`Needs ~${hrs} generation-hours/mo, but a month only has ~730. This rig physically can't produce your usage at this volume.`,
     usageLine:(u,none)=>`→ that's roughly <b>${u}/mo</b> of usage at coding-model API prices. Here's what running it yourself would cost instead`+(none?` <span class="muted">(you're barely scratching the free tier)</span>`:``)+`:`,
     tnoteApi:`ratio column = cost to run ÷ this model’s own cloud API&nbsp; (under 1.0× = local is cheaper) · models &amp; ◆ tiers from LiveBench, Jun 2026`,
+    apiHint:`<b>API mode:</b> each row is compared against <b>that model’s own</b> cloud API, which for open weights is very cheap, so a rig rarely wins on cost here. To see where buying pays off, switch the plan above to a subscription you’d replace, or raise the usage.`,
     tnoteSub:`ratio columns = cost to run ÷ that option&nbsp; (under 1.0× = local is cheaper · “maxed” = your usage tops the plan) · “vs API” = this model’s own cloud API · models &amp; ◆ tiers from LiveBench, Jun 2026`,
     tnoteFit:` · <b style="color:var(--tx-2)">fit</b> = loads at ~Q4 with KV cache in your device's fast memory (a smaller quant or RAM offload can stretch it). Verdict still assumes you buy the listed rig.`,
     fitYes:(mem,dev)=>` · <span class="fit-yes" title="Fits: ~${mem}GB needed at Q4, your device has ${dev}GB.">✓ fits</span>`,
@@ -402,6 +407,7 @@ const I18N = {
     cantKeepTip:hrs=>`Ayda ~${hrs} üretim-saati gerekir ama bir ayda yalnızca ~730 saat var. Bu rig, kullanımınızı bu hacimde fiziksel olarak üretemez.`,
     usageLine:(u,none)=>`→ bu, kodlama-modeli API fiyatlarıyla kabaca <b>${u}/ay</b> kullanım demek. İşte aynısını kendiniz çalıştırmanın maliyeti`+(none?` <span class="muted">(ücretsiz katmanı ancak zar zor kullanıyorsunuz)</span>`:``)+`:`,
     tnoteApi:`oran sütunu = çalıştırma maliyeti ÷ bu modelin kendi bulut API'si&nbsp; (1.0× altı = yerel daha ucuz) · modeller &amp; ◆ seviyeleri LiveBench, Haz 2026`,
+    apiHint:`<b>API modu:</b> her satır, <b>o modelin kendi</b> bulut API'siyle karşılaştırılır; açık ağırlıklarda bu çok ucuz olduğundan bir rig burada maliyette nadiren kazanır. Satın almanın ne zaman kazandığını görmek için yukarıdaki planı yerine koyacağınız bir aboneliğe çevirin ya da kullanımı artırın.`,
     tnoteSub:`oran sütunları = çalıştırma maliyeti ÷ o seçenek&nbsp; (1.0× altı = yerel daha ucuz · “aşıldı” = kullanımınız planı aşıyor) · “API'ye karşı” = bu modelin kendi bulut API'si · modeller &amp; ◆ seviyeleri LiveBench, Haz 2026`,
     tnoteFit:` · <b style="color:var(--tx-2)">uyum</b> = cihazınızın hızlı belleğinde ~Q4'te KV önbelleğiyle yüklenir (daha küçük bir kuantizasyon veya RAM'e taşıma bunu esnetebilir). Karar yine de listelenen rig'i aldığınızı varsayar.`,
     fitYes:(mem,dev)=>` · <span class="fit-yes" title="Uyar: Q4'te ~${mem}GB gerekir, cihazınızda ${dev}GB var.">✓ uyar</span>`,
@@ -681,6 +687,7 @@ function recompute(){
   document.getElementById('noSubsLabel').classList.toggle('locked', isApi);
   document.getElementById('tbl').classList.toggle('hide-subs', apiMode);
   document.getElementById('tnote').innerHTML = apiMode ? T().tnoteApi : T().tnoteSub;
+  const hint=document.getElementById('apiHint'); hint.innerHTML = apiMode ? T().apiHint : ''; hint.hidden = !apiMode;
   if(dev.mem!=null){ document.getElementById('tnote').innerHTML += T().tnoteFit; }
   document.getElementById('usageLine').innerHTML = T().usageLine(fmt$(u), !!PLANS[planIdx].none);
   MODELS.forEach((m,i)=>{
