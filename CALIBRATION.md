@@ -50,6 +50,13 @@ Extended the cheapest end so the "can the cheapest possible box do anything?" qu
 - Device: `Mac mini · M2 · 8GB (used)` (mem 8) inserted at DEVICES index 1 (after "any device"). NOTE: this shifts every later device index by +1, so pre-existing shared `?d=` URLs point one device off; acceptable this early post-launch. DEVICES / I18N.en.devices / I18N.tr.devices must stay the same length and order (labels come from I18N, mem from DEVICES, indexed together).
 - On the 8GB mini only the 4B (yes) and 8B (yes, optimistic at small context) fit; everything 12B+ reads "no". Deliberately did NOT add 14B/27B/32B mid-variants: the 8B and 27B rows already bracket them and they change no verdict.
 
+### Mid-tier gap-fillers (2026-06-28, follow-up)
+
+Reconciled the GPU/Mac-Studio block against a fuller LiveBench open-weight leaderboard. Confirmed the leaderboard's 3rd column is Coding Avg, matching every existing `coding` value exactly (GLM-5.2 79.65=0.80, Qwen3.6-27B 71.78=0.72, etc.). Of 9 leaderboard models not yet present, added only the two that fill a real size/cost gap between DeepSeek-V4-Flash (284B) and GLM-5.2 (744B); skipped the pure version-duplicates (GLM 5 / 5.1, Kimi K2 / K2.5 / K2.6) that share hardware with a row already shown and would only differ by score.
+
+- `{id:'glm-4.7', name:'GLM-4.7', tier:2, mem:200, rig:'used M3 Ultra 256GB', tps:21, capex:6000, watts:230, api:0.55, params:'357B / 32B active', coding:0.73}`. Full GLM-4.7 (not the laptop Flash). coding from leaderboard (73.13). Hardware by analogy to the 256GB-Mac MoEs (deepseek-v4-flash / minimax-m2.5): 357B/32B Q4 GGUF ~200GB fits a 256GB Mac with headroom; tps scaled from glm-5.2 (40B active to 17) for 32B active. tier 2: Agentic-Coding 41.67 is borderline, kept at light-agentic for consistency with the family's native tool-use and its tier-2 Flash sibling (not 1). api a mid-estimate between Flash (0.11) and 5.2 (1.42); editable. MED-LOW on tps/api.
+- `{id:'deepseek-v3.2', name:'DeepSeek-V3.2', tier:1, mem:404, rig:'used M3 Ultra 512GB', tps:18, capex:9500, watts:250, api:0.28, params:'671B / 37B active', coding:0.65}`. Released V3.2 "Thinking" (overall 62.20), not the experimental variant. coding from leaderboard (64.62). 671B Q4_K_M ~404GB fits 512GB Mac (same rig as glm-5.2); tps scaled from glm-5.2's 40B-active 17. tier 1: Agentic-Coding 40.00 (= Gemma 31B). api ~0.28 (DeepSeek cheap; between v4-flash 0.12 and v4-pro 0.47). MED on mem/tps.
+
 ## Key changes vs the old mock estimates
 
 - ELEC 0.15 to 0.18 (EIA US residential, Mar 2026). FRONTIER/AMORT/IORATIO confirmed.

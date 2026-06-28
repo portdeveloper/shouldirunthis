@@ -78,11 +78,16 @@
   .langsel::after{content:"▾";position:absolute;right:9px;pointer-events:none;color:var(--tx-3);font-size:10px}
 
   /* hero */
-  .hero{padding:48px 0 6px}
+  .hero{padding:48px 0 6px;position:relative}
   h1.head{font-size:clamp(30px,4.4vw,50px);line-height:1.07;font-weight:800;letter-spacing:-.035em;margin:0 0 18px;max-width:720px}
   h1.head .muted{color:var(--tx-3)}
   .herosub{margin:0 0 26px;max-width:660px;font-size:15px;line-height:1.55;color:var(--tx-2)}
   .herosub .hl{color:var(--tx);font-weight:600}
+  .heroqr{position:absolute;top:48px;right:0;display:flex;flex-direction:column;align-items:center;gap:7px;text-decoration:none;padding:11px 11px 9px;background:#fff;border-radius:14px;box-shadow:0 6px 26px rgba(0,0,0,.4);transition:transform .18s ease}
+  .heroqr:hover{transform:translateY(-2px)}
+  .heroqr svg{width:104px;height:104px;display:block;border-radius:3px}
+  .qrcap{font-size:11px;font-weight:700;color:#0a0a0a;letter-spacing:.01em;text-align:center}
+  @media (max-width:900px){ .heroqr{position:static;margin:2px 0 24px} }
   .rainbow{display:inline-block;cursor:pointer;user-select:none;background:linear-gradient(90deg,#ff6b6b,#fbbf24,#4ade80,#60a5fa,#a78bfa,#f472b6,#ff6b6b);background-size:200% auto;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent;animation:rainbow 4s linear infinite;transition:transform .18s ease}
   .rainbow:hover{transform:scale(1.1)}
   .rainbow:active{transform:scale(1.04)}
@@ -229,6 +234,7 @@
     <section class="hero">
       <h1 class="head" data-i18n-html="heroTitle">should you <span class="muted">buy a</span> <span class="rainbow">rig</span> instead of paying for an API or subscription?</h1>
       <p class="herosub" data-i18n-html="heroSub">Mostly this is a cost question, and the API often wins. But not only: running local keeps your code and prompts <span class="hl">on your own machine</span>, never in a provider's API logs.</p>
+      <a class="heroqr" href="https://shouldirunthis.xyz" aria-label="QR code to shouldirunthis.xyz"><svg viewBox="0 0 29 29" shape-rendering="crispEdges" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="QR code linking to shouldirunthis.xyz"><rect width="29" height="29" fill="#fff"/><path d="M2 2h1v1h-1zM3 2h1v1h-1zM4 2h1v1h-1zM5 2h1v1h-1zM6 2h1v1h-1zM7 2h1v1h-1zM8 2h1v1h-1zM10 2h1v1h-1zM11 2h1v1h-1zM13 2h1v1h-1zM14 2h1v1h-1zM16 2h1v1h-1zM17 2h1v1h-1zM18 2h1v1h-1zM20 2h1v1h-1zM21 2h1v1h-1zM22 2h1v1h-1zM23 2h1v1h-1zM24 2h1v1h-1zM25 2h1v1h-1zM26 2h1v1h-1zM2 3h1v1h-1zM8 3h1v1h-1zM11 3h1v1h-1zM12 3h1v1h-1zM13 3h1v1h-1zM14 3h1v1h-1zM18 3h1v1h-1zM20 3h1v1h-1zM26 3h1v1h-1zM2 4h1v1h-1zM4 4h1v1h-1zM5 4h1v1h-1zM6 4h1v1h-1zM8 4h1v1h-1zM17 4h1v1h-1zM20 4h1v1h-1zM22 4h1v1h-1zM23 4h1v1h-1zM24 4h1v1h-1zM26 4h1v1h-1zM2 5h1v1h-1zM4 5h1v1h-1zM5 5h1v1h-1zM6 5h1v1h-1zM8 5h1v1h-1zM10 5h1v1h-1zM12 5h1v1h-1zM13 5h1v1h-1zM14 5h1v1h-1zM15 5h1v1h-1zM16 5h1v1h-1zM17 5h1v1h-1zM20 5h1v1h-1zM22 5h1v1h-1zM23 5h1v1h-1zM24 5h1v1h-1zM26 5h1v1h-1zM2 6h1v1h-1zM4 6h1v1h-1zM5 6h1v1h-1zM6 6h1v1h-1zM8 6h1v1h-1zM10 6h1v1h-1zM12 6h1v1h-1zM15 6h1v1h-1zM17 6h1v1h-1zM18 6h1v1h-1zM20 6h1v1h-1zM22 6h1v1h-1zM23 6h1v1h-1zM24 6h1v1h-1zM26 6h1v1h-1zM2 7h1v1h-1zM8 7h1v1h-1zM10 7h1v1h-1zM13 7h1v1h-1zM15 7h1v1h-1zM20 7h1v1h-1zM26 7h1v1h-1zM2 8h1v1h-1zM3 8h1v1h-1zM4 8h1v1h-1zM5 8h1v1h-1zM6 8h1v1h-1zM7 8h1v1h-1zM8 8h1v1h-1zM10 8h1v1h-1zM12 8h1v1h-1zM14 8h1v1h-1zM16 8h1v1h-1zM18 8h1v1h-1zM20 8h1v1h-1zM21 8h1v1h-1zM22 8h1v1h-1zM23 8h1v1h-1zM24 8h1v1h-1zM25 8h1v1h-1zM26 8h1v1h-1zM10 9h1v1h-1zM11 9h1v1h-1zM13 9h1v1h-1zM14 9h1v1h-1zM18 9h1v1h-1zM2 10h1v1h-1zM6 10h1v1h-1zM8 10h1v1h-1zM9 10h1v1h-1zM10 10h1v1h-1zM11 10h1v1h-1zM13 10h1v1h-1zM14 10h1v1h-1zM18 10h1v1h-1zM19 10h1v1h-1zM20 10h1v1h-1zM21 10h1v1h-1zM22 10h1v1h-1zM23 10h1v1h-1zM26 10h1v1h-1zM3 11h1v1h-1zM4 11h1v1h-1zM6 11h1v1h-1zM7 11h1v1h-1zM9 11h1v1h-1zM11 11h1v1h-1zM12 11h1v1h-1zM16 11h1v1h-1zM17 11h1v1h-1zM18 11h1v1h-1zM22 11h1v1h-1zM23 11h1v1h-1zM25 11h1v1h-1zM2 12h1v1h-1zM3 12h1v1h-1zM4 12h1v1h-1zM8 12h1v1h-1zM11 12h1v1h-1zM14 12h1v1h-1zM17 12h1v1h-1zM19 12h1v1h-1zM20 12h1v1h-1zM21 12h1v1h-1zM22 12h1v1h-1zM23 12h1v1h-1zM24 12h1v1h-1zM2 13h1v1h-1zM4 13h1v1h-1zM5 13h1v1h-1zM6 13h1v1h-1zM7 13h1v1h-1zM9 13h1v1h-1zM10 13h1v1h-1zM11 13h1v1h-1zM12 13h1v1h-1zM14 13h1v1h-1zM17 13h1v1h-1zM18 13h1v1h-1zM19 13h1v1h-1zM24 13h1v1h-1zM25 13h1v1h-1zM2 14h1v1h-1zM3 14h1v1h-1zM5 14h1v1h-1zM7 14h1v1h-1zM8 14h1v1h-1zM11 14h1v1h-1zM14 14h1v1h-1zM17 14h1v1h-1zM19 14h1v1h-1zM20 14h1v1h-1zM23 14h1v1h-1zM24 14h1v1h-1zM25 14h1v1h-1zM26 14h1v1h-1zM2 15h1v1h-1zM3 15h1v1h-1zM4 15h1v1h-1zM5 15h1v1h-1zM9 15h1v1h-1zM10 15h1v1h-1zM12 15h1v1h-1zM14 15h1v1h-1zM16 15h1v1h-1zM17 15h1v1h-1zM18 15h1v1h-1zM22 15h1v1h-1zM25 15h1v1h-1zM4 16h1v1h-1zM5 16h1v1h-1zM6 16h1v1h-1zM7 16h1v1h-1zM8 16h1v1h-1zM9 16h1v1h-1zM11 16h1v1h-1zM13 16h1v1h-1zM17 16h1v1h-1zM18 16h1v1h-1zM20 16h1v1h-1zM21 16h1v1h-1zM22 16h1v1h-1zM23 16h1v1h-1zM24 16h1v1h-1zM7 17h1v1h-1zM11 17h1v1h-1zM12 17h1v1h-1zM16 17h1v1h-1zM17 17h1v1h-1zM20 17h1v1h-1zM21 17h1v1h-1zM22 17h1v1h-1zM24 17h1v1h-1zM25 17h1v1h-1zM2 18h1v1h-1zM3 18h1v1h-1zM5 18h1v1h-1zM8 18h1v1h-1zM9 18h1v1h-1zM10 18h1v1h-1zM11 18h1v1h-1zM13 18h1v1h-1zM18 18h1v1h-1zM19 18h1v1h-1zM20 18h1v1h-1zM21 18h1v1h-1zM22 18h1v1h-1zM23 18h1v1h-1zM24 18h1v1h-1zM10 19h1v1h-1zM11 19h1v1h-1zM12 19h1v1h-1zM13 19h1v1h-1zM15 19h1v1h-1zM18 19h1v1h-1zM22 19h1v1h-1zM2 20h1v1h-1zM3 20h1v1h-1zM4 20h1v1h-1zM5 20h1v1h-1zM6 20h1v1h-1zM7 20h1v1h-1zM8 20h1v1h-1zM10 20h1v1h-1zM11 20h1v1h-1zM12 20h1v1h-1zM13 20h1v1h-1zM14 20h1v1h-1zM15 20h1v1h-1zM18 20h1v1h-1zM20 20h1v1h-1zM22 20h1v1h-1zM2 21h1v1h-1zM8 21h1v1h-1zM11 21h1v1h-1zM13 21h1v1h-1zM16 21h1v1h-1zM18 21h1v1h-1zM22 21h1v1h-1zM23 21h1v1h-1zM24 21h1v1h-1zM25 21h1v1h-1zM26 21h1v1h-1zM2 22h1v1h-1zM4 22h1v1h-1zM5 22h1v1h-1zM6 22h1v1h-1zM8 22h1v1h-1zM10 22h1v1h-1zM11 22h1v1h-1zM12 22h1v1h-1zM13 22h1v1h-1zM16 22h1v1h-1zM18 22h1v1h-1zM19 22h1v1h-1zM20 22h1v1h-1zM21 22h1v1h-1zM22 22h1v1h-1zM23 22h1v1h-1zM24 22h1v1h-1zM2 23h1v1h-1zM4 23h1v1h-1zM5 23h1v1h-1zM6 23h1v1h-1zM8 23h1v1h-1zM11 23h1v1h-1zM13 23h1v1h-1zM16 23h1v1h-1zM19 23h1v1h-1zM20 23h1v1h-1zM21 23h1v1h-1zM24 23h1v1h-1zM25 23h1v1h-1zM26 23h1v1h-1zM2 24h1v1h-1zM4 24h1v1h-1zM5 24h1v1h-1zM6 24h1v1h-1zM8 24h1v1h-1zM12 24h1v1h-1zM13 24h1v1h-1zM15 24h1v1h-1zM16 24h1v1h-1zM20 24h1v1h-1zM23 24h1v1h-1zM25 24h1v1h-1zM2 25h1v1h-1zM8 25h1v1h-1zM13 25h1v1h-1zM17 25h1v1h-1zM21 25h1v1h-1zM22 25h1v1h-1zM23 25h1v1h-1zM24 25h1v1h-1zM25 25h1v1h-1zM2 26h1v1h-1zM3 26h1v1h-1zM4 26h1v1h-1zM5 26h1v1h-1zM6 26h1v1h-1zM7 26h1v1h-1zM8 26h1v1h-1zM10 26h1v1h-1zM13 26h1v1h-1zM17 26h1v1h-1zM19 26h1v1h-1zM20 26h1v1h-1zM24 26h1v1h-1zM25 26h1v1h-1zM26 26h1v1h-1z" fill="#0a0a0a"/></svg><span class="qrcap" data-i18n="qrCap">scan to open</span></a>
       <div class="controls">
         <div class="row"><span data-i18n="ctlPay">Today I pay</span><span class="chip"><select id="plan"></select><span class="car">▾</span></span><span id="andI" data-i18n="ctlAndI">and I</span><span class="chip" id="thrChip"><select id="throttle"></select><span class="car">▾</span></span><span data-i18n="ctlSpend">and I can spend</span><span class="chip"><select id="budget"></select><span class="car">▾</span></span><span data-i18n="ctlForRig">for a rig</span></div>
       </div>
@@ -313,6 +319,7 @@ const I18N = {
     builtBy:'built by',
     heroTitle:'should you <span class="muted">buy a</span> <span class="rainbow">rig</span> instead of paying for an API or subscription?',
     heroSub:`Mostly this is a cost question, and the API often wins. But not only: running local keeps your code and prompts <span class="hl">on your own machine</span>, never in a provider's API logs.`,
+    qrCap:'scan to open',
     ctlPay:'Today I pay', ctlAndI:'and I', ctlSpend:'and I can spend', ctlForRig:'for a rig',
     devicePick:'Can my device run these?',
     apiToggle:'I use the API, not subscriptions',
@@ -401,6 +408,7 @@ const I18N = {
     builtBy:'yapan',
     heroTitle:'bir API ya da aboneliğe ödeme yapmak yerine <span class="muted">kendine bir</span> <span class="rainbow">rig</span> mi almalısın?',
     heroSub:`Bu çoğunlukla bir maliyet sorusu ve genelde API kazanır. Ama tek mesele o değil: yerel çalıştırmak kodunuzu ve istemlerinizi bir sağlayıcının API günlüklerinde değil <span class="hl">kendi makinenizde</span> tutar.`,
+    qrCap:'açmak için tara',
     ctlPay:'Şu anki planım', ctlAndI:'ve', ctlSpend:'ve bir rig\'e', ctlForRig:'ayırabilirim',
     devicePick:'Cihazım bunları çalıştırabilir mi?',
     apiToggle:'Abonelik değil, API kullanıyorum',
@@ -589,7 +597,9 @@ const MODELS = [
   {id:'gemma-4-31b',      name:'Gemma 4 31B',          tier:1, mem:20,  rig:'1× RTX 5090',     tps:63,  capex:4500,  watts:575,  api:0.15, params:'31B dense',          coding:0.60},
   {id:'deepseek-v4-flash',name:'DeepSeek-V4-Flash',    tier:2, mem:165, rig:'used M3 Ultra 256GB',  tps:30,  capex:6000,  watts:230,  api:0.12, params:'284B / 13B active',  coding:0.69},
   {id:'minimax-m2.5',     name:'MiniMax-M2.5',         tier:2, mem:135, rig:'used M3 Ultra 256GB',  tps:38,  capex:6000,  watts:230,  api:0.21, params:'230B / 10B active', coding:0.71},
+  {id:'glm-4.7',          name:'GLM-4.7',              tier:2, mem:200, rig:'used M3 Ultra 256GB',  tps:21,  capex:6000,  watts:230,  api:0.55, params:'357B / 32B active',  coding:0.73},
   {id:'minimax-m3',       name:'MiniMax-M3',           tier:3, mem:250, rig:'used M3 Ultra 512GB',  tps:26,  capex:9500,  watts:250,  api:0.37, params:'428B / 23B active',  coding:0.68},
+  {id:'deepseek-v3.2',    name:'DeepSeek-V3.2',        tier:1, mem:404, rig:'used M3 Ultra 512GB',  tps:18,  capex:9500,  watts:250,  api:0.28, params:'671B / 37B active',  coding:0.65},
   {id:'glm-5.2',          name:'GLM-5.2',              tier:3, mem:476, rig:'used M3 Ultra 512GB',  tps:17,  capex:9500,  watts:250,  api:1.42, params:'744B / 40B active',  coding:0.80},
   {id:'kimi-k2.7',        name:'Kimi K2.7-Code',       tier:3, mem:580, rig:'2× used M3 Ultra 512GB',tps:15, capex:19000, watts:500,  api:0.80, params:'1T / 32B active',    coding:0.74},
   {id:'deepseek-v4-pro',  name:'DeepSeek-V4-Pro',      tier:3, mem:600, rig:'8× RTX 3090',     tps:8,   capex:13000, watts:2400, api:0.47, params:'1.6T / 49B active',  coding:0.70},
