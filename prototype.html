@@ -123,6 +123,7 @@
   .assump-note{margin:12px 0 0;line-height:1.55}
   .tabletools{display:flex;align-items:center;justify-content:space-between;gap:12px 18px;margin:16px 0 0;flex-wrap:wrap}
   .tt-left{display:flex;align-items:center;gap:12px 18px;flex-wrap:wrap}
+  .tt-right{display:flex;align-items:center;gap:12px 18px;flex-wrap:wrap}
   .ownedtag{margin-left:6px;font-size:10.5px;font-weight:600;color:var(--tx-3);text-transform:uppercase;letter-spacing:.04em}
   .device-pick{display:flex;align-items:center;gap:10px;font-size:13px;color:var(--tx-2);flex-wrap:wrap}
   .device-pick>span{white-space:nowrap}
@@ -141,6 +142,8 @@
   .tgl input:checked + .switch::after{transform:translateX(17px);background:#fff}
   .tgl input:focus-visible + .switch{box-shadow:0 0 0 3px var(--accent-dim)}
   #tbl.hide-subs .subcol{display:none}
+  /* lean (default): collapse to Model / Cost / Verdict so the table fits without side-scroll. "More columns" toggle expands it. */
+  #tbl.lean .mobile-hide,#tbl.lean .advcol,#tbl.lean .subcol{display:none}
   .table-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:14px;margin-top:16px;background:var(--bg-elev)}
   table{border-collapse:collapse;width:100%;min-width:1320px}
   thead th{font-size:11px;text-transform:uppercase;letter-spacing:.04em;color:var(--tx-3);font-weight:600;
@@ -305,7 +308,10 @@
         <label class="device-pick"><span data-i18n="devicePick">Can my device run these?</span><span class="chip"><select id="device" aria-label="Your device"></select><span class="car">▾</span></span></label>
         <label class="tgl" id="ownDevLabel"><span data-i18n="ownToggle">I already own it</span><input type="checkbox" id="ownDev"><span class="switch" aria-hidden="true"></span></label>
       </div>
-      <label class="tgl" id="noSubsLabel"><span data-i18n="apiToggle">I use the API, not subscriptions</span><input type="checkbox" id="noSubs"><span class="switch" aria-hidden="true"></span></label>
+      <div class="tt-right">
+        <label class="tgl" id="detailsLabel"><span data-i18n="detailsToggle">More columns</span><input type="checkbox" id="showDetails"><span class="switch" aria-hidden="true"></span></label>
+        <label class="tgl" id="noSubsLabel"><span data-i18n="apiToggle">I use the API, not subscriptions</span><input type="checkbox" id="noSubs"><span class="switch" aria-hidden="true"></span></label>
+      </div>
     </div>
     <div class="api-hint" id="apiHint" hidden></div>
     <div class="table-wrap">
@@ -401,6 +407,7 @@ const I18N = {
     ctlPay:'Today I pay', ctlAndI:'and I', ctlSpend:'and I can spend', ctlForRig:'for a rig',
     devicePick:'Can my device run these?',
     apiToggle:'I use the API, not subscriptions',
+    detailsToggle:'More columns',
     th:{model:'Model',speed:'Speed',rig:'Rig',power:'Power',apiPrice:'API price',cost:'Cost to run',api:'vs API',g20:'vs GPT',c20:'vs Claude',g100:'vs GPT',c100:'vs Claude',verdict:'Verdict'},
     thsub:{model:'can it code? · rig',speed:'tokens/sec',rig:'approx',power:'watts',apiPrice:'$/MTok',cost:'/mo · rig÷3yr + power',api:'its own API',g20:'$20 sub',c20:'$20 sub',g100:'$100 sub',c100:'$100 sub'},
     asmHead:'assumptions', asmSub:'mid-2026 estimates; edit your reality',
@@ -505,6 +512,7 @@ const I18N = {
     ctlPay:'Şu anki planım', ctlAndI:'ve', ctlSpend:'ve bir rig\'e', ctlForRig:'ayırabilirim',
     devicePick:'Cihazım bunları çalıştırabilir mi?',
     apiToggle:'Abonelik değil, API kullanıyorum',
+    detailsToggle:'Tüm sütunlar',
     th:{model:'Model',speed:'Hız',rig:'Rig',power:'Güç',apiPrice:'API fiyatı',cost:'Çalıştırma maliyeti',api:'API\'ye karşı',g20:'GPT\'ye karşı',c20:'Claude\'a karşı',g100:'GPT\'ye karşı',c100:'Claude\'a karşı',verdict:'Karar'},
     thsub:{model:'kod yazabilir mi? · rig',speed:'token/sn',rig:'yaklaşık',power:'watt',apiPrice:'$/MTok',cost:'/ay · rig÷3yıl + güç',api:'kendi API\'si',g20:'$20 abonelik',c20:'$20 abonelik',g100:'$100 abonelik',c100:'$100 abonelik'},
     asmHead:'varsayımlar', asmSub:'2026 ortası tahminleri; kendi gerçeğini düzenle',
@@ -759,6 +767,7 @@ function explain(m, lm, sub, ratio, v, outgrown, u, noSubs, apiMo){
 
 let planIdx=4, thrIdx=2, budIdx=5, noSubs=false, devIdx=0, ownDevice=false, RAT=[];
 let CHATCTX=null; // live snapshot the chat assistant sends as context
+let showDetails=false; // false => lean table (Model/Cost/Verdict); toggle expands all columns
 const usage=()=>usageDollars(PLANS[planIdx],THROTTLES[thrIdx]);
 const fmt$=n=>'$'+Math.round(n).toLocaleString();
 const fmtPwr=n=>n<1?'$'+n.toFixed(2):fmt$(n); // power-only costs can be sub-dollar
@@ -773,6 +782,7 @@ function wireSelects(){
   b.oninput=e=>{budIdx=+e.target.value;recompute();writeURL();};
   d.oninput=e=>{devIdx=+e.target.value;recompute();writeURL();};
   document.getElementById('noSubs').oninput=e=>{noSubs=e.target.checked;recompute();writeURL();};
+  document.getElementById('showDetails').oninput=e=>{showDetails=e.target.checked;recompute();};
   document.getElementById('ownDev').oninput=e=>{ownDevice=e.target.checked;recompute();writeURL();};
   const ls=document.getElementById('lang');
   if(ls){
@@ -839,6 +849,8 @@ function recompute(){
   const od=document.getElementById('ownDev'); od.disabled=!specific; od.checked=owns;
   document.getElementById('ownDevLabel').classList.toggle('locked', !specific);
   document.getElementById('tbl').classList.toggle('hide-subs', apiMode);
+  document.getElementById('tbl').classList.toggle('lean', !showDetails);
+  document.getElementById('showDetails').checked=showDetails;
   document.getElementById('tnote').innerHTML = apiMode ? T().tnoteApi : T().tnoteSub;
   const hint=document.getElementById('apiHint'); hint.innerHTML = apiMode ? T().apiHint : ''; hint.hidden = !apiMode;
   if(dev.mem!=null){ document.getElementById('tnote').innerHTML += owns ? T().tnoteOwn : T().tnoteFit; }
